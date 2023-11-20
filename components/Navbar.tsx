@@ -5,14 +5,9 @@ import Button from "./Button";
 
 const Navbar = () => {
   return (
-    <nav className="border-2 border-red-500 flexBetween max-container padding-container realtive z-30 py-5">
+    <nav className="flexBetween max-container padding-container realtive z-30 py-5">
       <Link href="/">
-        <Image
-          src="/hilink-logo.svg"
-          alt="logo"
-          width={74}
-          height={29}
-        />
+        <Image src="/hilink-logo.svg" alt="logo" width={74} height={29} />
       </Link>
       <ul className="hidden h-full gap-12 lg:flex">
         {NAV_LINKS.map((link) => (
@@ -33,6 +28,13 @@ const Navbar = () => {
           variant="btn_dark_green"
         />
       </div>
+      <Image
+        src="menu.svg"
+        alt="menu"
+        width={32}
+        height={32}
+        className="inline-block cursor-pointer lg:hidden"
+      />
     </nav>
   );
 };
