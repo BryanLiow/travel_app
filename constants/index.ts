@@ -1,11 +1,15 @@
+import HomeIcon from '@mui/icons-material/Home';
+import RecommendIcon from '@mui/icons-material/Recommend';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
+import ProfileIcon from '@mui/icons-material/AccountCircle';
+
 // NAVIGATION
 export const NAV_LINKS = [
-    { href: '/', key: 'home', label: 'Home' },
-    { href: '/', key: 'how_hilink_work', label: 'How Hilink Work?' },
-    { href: '/', key: 'services', label: 'Services' },
-    { href: '/', key: 'pricing ', label: 'Pricing ' },
-    { href: '/', key: 'contact_us', label: 'Contact Us' },
-  ];
+  { href: '/', key: 'home', label: 'Home', Icon: HomeIcon },
+  { href: '/', key: 'recommend', label: 'Recommend', Icon: RecommendIcon },
+  { href: '/', key: 'following', label: 'Following', Icon: PersonAddAltIcon },
+  { href: '/', key: 'profile', label: 'Profile', Icon: ProfileIcon },
+];
   
   // CAMP SECTION
   export const PEOPLE_URL = [
@@ -84,3 +88,169 @@ export const NAV_LINKS = [
       '/wordpress.svg',
     ],
   };
+
+  
+  // HOME SECTION
+  export const HOME_CONTENT_CARD = [
+    {
+      contentCardTitle: 'This is title',
+      thumbnail: 'https://picsum.photos/id/1/245/400',
+      likes: 12345,
+      user: 'Bliowww',
+      location: 'Malaysia',
+      createdOn: '1 Week Ago'
+    },
+    {
+      contentCardTitle: 'This is title',
+      thumbnail: 'https://picsum.photos/id/32/245/400',
+      likes: 12345,
+      user: 'Bliowww',
+      location: 'Malaysia',
+      createdOn: '1 Week Ago'
+    },
+    {
+      contentCardTitle: 'This is title',
+      thumbnail: 'https://picsum.photos/id/43/245/400',
+      likes: 12345,
+      user: 'Bliowww',
+      location: 'Malaysia',
+      createdOn: '1 Week Ago'
+    },
+    {
+      contentCardTitle: 'This is title',
+      thumbnail: 'https://picsum.photos/id/54/245/400',
+      likes: 12345,
+      user: 'Bliowww',
+      location: 'Malaysia',
+      createdOn: '1 Week Ago'
+    },
+    {
+      contentCardTitle: 'This is title',
+      thumbnail: 'https://picsum.photos/id/65/245/400',
+      likes: 12345,
+      user: 'Bliowww',
+      location: 'Malaysia',
+      createdOn: '1 Week Ago'
+    },
+    {
+      contentCardTitle: 'This is title',
+      thumbnail: 'https://picsum.photos/id/76/245/400',
+      likes: 12345,
+      user: 'Bliowww',
+      location: 'Malaysia',
+      createdOn: '1 Week Ago'
+    },
+    {
+      contentCardTitle: 'This is title',
+      thumbnail: 'https://picsum.photos/id/87/245/400',
+      likes: 12345,
+      user: 'Bliowww',
+      location: 'Malaysia',
+      createdOn: '1 Week Ago'
+    },
+    {
+      contentCardTitle: 'This is title',
+      thumbnail: 'https://picsum.photos/id/98/245/400',
+      likes: 12345,
+      user: 'Bliowww',
+      location: 'Malaysia',
+      createdOn: '1 Week Ago'
+    },
+    {
+      contentCardTitle: 'This is title',
+      thumbnail: 'https://picsum.photos/id/49/245/400',
+      likes: 12345,
+      user: 'Bliowww',
+      location: 'Malaysia',
+      createdOn: '1 Week Ago'
+    },
+    {
+      contentCardTitle: 'This is title',
+      thumbnail: 'https://picsum.photos/id/101/245/400',
+      likes: 12345,
+      user: 'Bliowww',
+      location: 'Malaysia',
+      createdOn: '1 Week Ago'
+    },
+    {
+      contentCardTitle: 'This is title',
+      thumbnail: 'https://picsum.photos/id/111/245/400',
+      likes: 12345,
+      user: 'Bliowww',
+      location: 'Malaysia',
+      createdOn: '1 Week Ago'
+    },
+    {
+      contentCardTitle: 'This is title',
+      thumbnail: 'https://picsum.photos/id/121/245/400',
+      likes: 12345,
+      user: 'Bliowww',
+      location: 'Malaysia',
+      createdOn: '1 Week Ago'
+    },
+    {
+      contentCardTitle: 'This is title',
+      thumbnail: 'https://picsum.photos/id/213/245/400',
+      likes: 12345,
+      user: 'Bliowww',
+      location: 'Malaysia',
+      createdOn: '1 Week Ago'
+    },
+    {
+      contentCardTitle: 'This is title',
+      thumbnail: 'https://picsum.photos/id/143/245/400',
+      likes: 12345,
+      user: 'Bliowww',
+      location: 'Malaysia',
+      createdOn: '1 Week Ago'
+    },
+    {
+      contentCardTitle: 'This is title',
+      thumbnail: 'https://picsum.photos/id/315/245/400',
+      likes: 12345,
+      user: 'Bliowww',
+      location: 'Malaysia',
+      createdOn: '1 Week Ago'
+    },
+    {
+      contentCardTitle: 'This is title',
+      thumbnail: 'https://picsum.photos/id/416/245/400',
+      likes: 12345,
+      user: 'Bliowww',
+      location: 'Malaysia',
+      createdOn: '1 Week Ago'
+    },
+    {
+      contentCardTitle: 'This is title',
+      thumbnail: 'https://picsum.photos/id/174/245/400',
+      likes: 12345,
+      user: 'Bliowww',
+      location: 'Malaysia',
+      createdOn: '1 Week Ago'
+    },
+    {
+      contentCardTitle: 'This is title',
+      thumbnail: 'https://picsum.photos/id/185/245/400',
+      likes: 12345,
+      user: 'Bliowww',
+      location: 'Malaysia',
+      createdOn: '1 Week Ago'
+    },
+    {
+      contentCardTitle: 'This is title',
+      thumbnail: 'https://picsum.photos/id/519/245/400',
+      likes: 12345,
+      user: 'Bliowww',
+      location: 'Malaysia',
+      createdOn: '1 Week Ago'
+    },
+    {
+      contentCardTitle: 'This is title',
+      thumbnail: 'https://picsum.photos/id/620/245/400',
+      likes: 12345,
+      user: 'Bliowww',
+      location: 'Malaysia',
+      createdOn: '1 Week Ago'
+    },
+  ];
+  

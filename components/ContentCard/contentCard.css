@@ -1,0 +1,40 @@
+.content-cards-action span {
+  font-size: 12px;
+}
+
+.content-cards-action {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.content-cards-action-secondary {
+  color: gray;
+}
+
+.content-cards-action-secondary-text-right {
+  text-align: right;
+}
+
+.card-content-media-height-1 {
+  height: 200px;
+}
+
+.card-content-media-height-2 {
+  height: 350px;
+}
+
+.card-content-media-height-3 {
+  height: 450px;
+}
+
+.card-content-media-height-4 {
+  height: 550px;
+}
+
+.content-card {
+  border-radius: 12px;
+}
+
+.content-card:hover {
+  cursor: pointer;
+}
