@@ -7,6 +7,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      boxShadow: {
+        'right-bottom': '4px 4px 10px rgba(0, 0, 0, 0.25)',
+        'full': '0 0 35px rgba(0, 0, 0, 0.15)',
+      },
       colors: {
         green: {
           50: '#30AF5B',

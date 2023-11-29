@@ -1,20 +1,21 @@
-import Image from "next/image";
+import React from "react";
 
 type ButtonProps = {
   type: "button" | "submit";
   title: string;
-  icon?: string;
-  variant: "btn_dark_green";
+  icon?: React.ReactNode; // Accept a React node for the icon
+  variant: string;
+  onClick?: () => void;
 };
 
-const Button = ({ type, title, icon, variant }: ButtonProps) => {
+const Button = ({ type, title, icon, variant, onClick }: ButtonProps) => {
   return (
     <button
       type={type}
-      className={`flexCenter gap-13 rounded-full border ${variant}`}
+      className={`!py-2 !px-5 flexCenter gap-8 rounded-full border ${variant} hover:cursor-pointer`}
+      onClick={onClick}
     >
-      {icon && <Image src={icon} alt={title} width={24} height={24} />}
-      {<label className="bold-16 whitespace-nowrap">{title}</label>}
+      <label className="bold-16 whitespace-nowrap hover:cursor-pointer">{title}</label>
     </button>
   );
 };

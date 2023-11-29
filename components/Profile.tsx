@@ -1,5 +1,10 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
+import Card from "@mui/material/Card";
+import CardMedia from "@mui/material/CardMedia";
+import CardContent from "@mui/material/CardContent";
+import CardActions from "@mui/material/CardActions";
+import Typography from "@mui/material/Typography";
 import { HOME_CONTENT_CARD } from "@/constants";
 import ContentCard from "./ContentCard";
 import LanguageIcon from "@mui/icons-material/Language";
@@ -7,6 +12,7 @@ import MaleIcon from "@mui/icons-material/Male";
 import FemaleIcon from "@mui/icons-material/Female";
 import GridOnIcon from "@mui/icons-material/GridOn";
 import GradeIcon from "@mui/icons-material/Grade";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("work");
@@ -34,6 +40,16 @@ const Profile = () => {
         return (
           <div className="p-4">
             <div className="grid grid-cols-5 gap-5">
+              <Card
+                className="rounded-xl border-solid border-1 border-gray-900 flex justify-center items-center shadow-full hover:cursor-pointer"
+                sx={{ maxWidth: 345 }}
+              >
+                <AddCircleOutlineIcon
+                  fontSize="large"
+                  className="text-gray-400"
+                />{" "}
+                {/* Plus icon in the middle */}
+              </Card>
               {HOME_CONTENT_CARD.map((contentCard, index) => (
                 <div>
                   <ContentCard
