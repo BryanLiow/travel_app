@@ -1,29 +1,32 @@
 "use client";
-import React, { useState } from "react";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-import TextField from "@mui/material/TextField";
+import React, { useState, ChangeEvent } from "react";
+
 import { usePathname } from "next/navigation";
 import { NAV_LINKS } from "@/constants";
 import Image from "next/image";
 import Link from "next/link";
 import Button from "./Button";
-import PersonIcon from '@mui/icons-material/Person';
+import PersonIcon from "@mui/icons-material/Person";
 import SearchIcon from "@mui/icons-material/Search";
+import AuthPortal from "./AuthPortal";
+
+const AuthTabs = {
+  Login: "login",
+  Register: "register",
+};
 
 const Navbar = () => {
   const currentRoute = usePathname();
-  const [open, setOpen] = useState(false);
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
+  const [authTab, setAuthTab] = useState(AuthTabs.Login);
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleAuthDialogToggle = () => {
+    setAuthDialogOpen(!authDialogOpen);
+    if (!authDialogOpen) {
+      setAuthTab(AuthTabs.Login); // Reset the tab to 'Login' when opening the dialog
+    }
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
   return (
     <>
       <nav className="flexBetween max-container padding-container realtive z-30 py-5">
@@ -63,9 +66,15 @@ const Navbar = () => {
             title="Login"
             icon={<PersonIcon />} // Corrected syntax
             variant="btn_login"
-            onClick={handleClickOpen}
+            onClick={handleAuthDialogToggle}
           />
         </div>
+        <AuthPortal
+          open={authDialogOpen}
+          onClose={handleAuthDialogToggle}
+          activeTab={authTab}
+          onChangeActiveTab={setAuthTab}
+        />{" "}
         <Image
           src="menu.svg"
           alt="menu"
@@ -74,40 +83,6 @@ const Navbar = () => {
           className="inline-block cursor-pointer lg:hidden"
         />
       </nav>
-      <div>
-        <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>Login</DialogTitle>
-          <DialogContent>
-            <TextField
-              autoFocus
-              margin="dense"
-              label="Email Address"
-              type="email"
-              fullWidth
-            />
-            <TextField
-              margin="dense"
-              label="Password"
-              type="password"
-              fullWidth
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button
-              type="button"
-              title="Cancel"
-              variant="btn_cancel" // Specify the variant you want to use
-              onClick={handleClose}
-            />
-            <Button
-              type="submit" // Assuming 'Login' is a submit action
-              title="Login"
-              variant="btn_login" // Specify the variant you want to use
-              onClick={handleClose} // Update this if you have a specific function for login
-            />
-          </DialogActions>
-        </Dialog>
-      </div>
     </>
   );
 };

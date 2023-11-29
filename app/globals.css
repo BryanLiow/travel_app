@@ -197,3 +197,7 @@ body {
 .text-white {
   color: white !important;
 }
+
+.dialog-transition {
+  transition: all 0.3s ease-out;
+}

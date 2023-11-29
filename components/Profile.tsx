@@ -1,10 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import Card from "@mui/material/Card";
-import CardMedia from "@mui/material/CardMedia";
-import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
-import Typography from "@mui/material/Typography";
 import { HOME_CONTENT_CARD } from "@/constants";
 import ContentCard from "./ContentCard";
 import LanguageIcon from "@mui/icons-material/Language";
@@ -13,6 +9,8 @@ import FemaleIcon from "@mui/icons-material/Female";
 import GridOnIcon from "@mui/icons-material/GridOn";
 import GradeIcon from "@mui/icons-material/Grade";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import Link from "next/link";
+import SettingsIcon from "@mui/icons-material/Settings";
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("work");
@@ -106,9 +104,16 @@ const Profile = () => {
             className="z-10 w-44 h-44 rounded-full border-4 border-white shadow-sm"
           />
           {/* Wrapper with a background to ensure text color is white regardless of parent opacity */}
-          <div className="z-10 bg-transparent">
-            <h2 className="text-3xl font-semibold text-white">Ze Yan</h2>
-            <p className="text-sm text-white">username: bryanlzy</p>
+          <div className="z-10 bg-transparent flex items-center">
+            <div>
+              <h2 className="text-3xl font-semibold text-white">Ze Yan</h2>
+              <p className="text-sm text-white">username: bryanlzy</p>
+            </div>
+            <Link href="/editProfile" legacyBehavior>
+              <a className="flex justify-center items-center text-white px-3 py-1 ml-2">
+                <SettingsIcon />
+              </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -144,11 +149,6 @@ const Profile = () => {
                 <span className="bg-gray-600 text-white py-1 px-2 rounded-lg mr-2">
                   <LanguageIcon /> Ireland
                 </span>
-              </div>
-              <div className="flex">
-                <button className="flex-grow bg-gray-600 text-white px-3 py-1 mr-2 rounded hover:bg-gray-700">
-                  Edit profile <span className="text-gray-400">90%</span>{" "}
-                </button>
               </div>
 
               {/* Tabs */}
