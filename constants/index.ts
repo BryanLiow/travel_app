@@ -6,8 +6,8 @@ import ProfileIcon from '@mui/icons-material/AccountCircle';
 // NAVIGATION
 export const NAV_LINKS = [
   { href: '/', key: 'home', label: 'Home', Icon: HomeIcon },
-  { href: '/recommend', key: 'recommend', label: 'Recommend', Icon: RecommendIcon },
-  { href: '/following', key: 'following', label: 'Following', Icon: PersonAddAltIcon },
+  // { href: '/recommend', key: 'recommend', label: 'Recommend', Icon: RecommendIcon },
+  // { href: '/following', key: 'following', label: 'Following', Icon: PersonAddAltIcon },
   { href: '/profile', key: 'profile', label: 'Profile', Icon: ProfileIcon },
 ];
   

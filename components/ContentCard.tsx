@@ -8,6 +8,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 
 type ContentCardProps = {
+  randomHeight: string;
   contentCardTitle: string;
   thumbnail: string;
   likes: number;
@@ -17,6 +18,7 @@ type ContentCardProps = {
 };
 
 const ContentCard = ({
+  randomHeight,
   contentCardTitle,
   thumbnail,
   likes,
@@ -31,13 +33,16 @@ const ContentCard = ({
         sx={{ maxWidth: 350 }}
       >
         <CardMedia
-          className={`card-content-media-height-${
-            Math.floor(Math.random() * 4) + 1
-          }`}
+          className={
+            randomHeight === "true"
+              ? `card-content-media-height-${Math.floor(Math.random() * 4) + 1}`
+              : "card-content-media-height-2"
+          }
           component="img"
           image={thumbnail}
           alt=""
         />
+
         <CardContent>
           <Typography>{contentCardTitle}</Typography>
         </CardContent>

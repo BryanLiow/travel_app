@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
+// import AuthPortal from "../components/AuthPortal";
 
 export const metadata: Metadata = {
   title: "Travel",
@@ -18,6 +19,7 @@ export default function RootLayout({
       <body>
         <Navbar />
         <main className="relative overflow-hidden">
+          {/* <AuthPortal /> */}
           {children}
         </main>
         <Footer />

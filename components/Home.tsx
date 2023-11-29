@@ -10,6 +10,7 @@ const Home = () => {
             <div className="content-card-container">
               <ContentCard
                 key={index}
+                randomHeight = "true"
                 contentCardTitle={contentCard.contentCardTitle}
                 thumbnail={contentCard.thumbnail}
                 likes={contentCard.likes}
