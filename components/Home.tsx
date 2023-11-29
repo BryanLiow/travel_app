@@ -1,18 +1,10 @@
 import { HOME_CONTENT_CARD } from "@/constants";
-import ContentCard from "../ContentCard/ContentCard";
-import "./home.css";
-
-type ButtonProps = {
-  type: "button" | "submit";
-  title: string;
-  icon?: string;
-  variant: "btn_dark_green";
-};
+import ContentCard from "./ContentCard";
 
 const Home = () => {
   return (
     <>
-      <div className="flexCenter">
+      <div className="flex">
         <div className="home-container">
           {HOME_CONTENT_CARD.map((contentCard, index) => (
             <div className="content-card-container">
@@ -32,6 +24,5 @@ const Home = () => {
     </>
   );
 };
-
 
 export default Home;

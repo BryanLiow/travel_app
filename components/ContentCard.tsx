@@ -6,7 +6,6 @@ import CardActions from "@mui/material/CardActions";
 import Typography from "@mui/material/Typography";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import "./contentCard.css";
 
 type ContentCardProps = {
   contentCardTitle: string;
@@ -26,8 +25,11 @@ const ContentCard = ({
   createdOn,
 }: ContentCardProps) => {
   return (
-    <div className="content-card-containter">
-      <Card className="content-card" sx={{ maxWidth: 350 }}>
+    <div>
+      <Card
+        className="rounded-xl border-solid border-1 border-gray-900"
+        sx={{ maxWidth: 350 }}
+      >
         <CardMedia
           className={`card-content-media-height-${
             Math.floor(Math.random() * 4) + 1
@@ -37,24 +39,22 @@ const ContentCard = ({
           alt=""
         />
         <CardContent>
-          <Typography variant="body2" color="text.secondary">
-            {contentCardTitle}
-          </Typography>
+          <Typography>{contentCardTitle}</Typography>
         </CardContent>
         <CardActions>
-          <div className="content-cards-action" style={{ width: "100%" }}>
+          <div className="grid grid-cols-2 w-full">
             <div>
               <FavoriteIcon />
-              <span>{likes}</span>
+              <span className="text-xs">{likes}</span>
             </div>
-            <div className="content-cards-action-secondary content-cards-action-secondary-text-right">
+            <div className="text-xs text-right">
               <LocationOnIcon />
               <span>{location}</span>
             </div>
-            <div className="content-cards-action-secondary">
+            <div className="text-xs text-gray-500">
               <span>@{user}</span>
             </div>
-            <div className="content-cards-action-secondary content-cards-action-secondary-text-right">
+            <div className="text-xs text-gray-500 text-right">
               <span>{createdOn}</span>
             </div>
           </div>
