@@ -103,13 +103,18 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
 
   // Function to handle registration
   const handleRegister = async () => {
+    console.log(name);
+    console.log(email);
+    console.log(password);
+    console.log(confirmPassword);
     try {
       const response = await Axios.post("http://127.0.0.1:8000/api/register", {
-        name,
-        email,
-        password,
-        confirmPassword,
+        name: name,
+        email: email,
+        password: password,
+        password_confirmation: confirmPassword,
       });
+      handleLogin();
       // Handle success response
       console.log(response.data);
       onClose(); // Close the dialog after successful registration
