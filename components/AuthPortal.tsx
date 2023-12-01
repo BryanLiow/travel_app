@@ -1,4 +1,5 @@
 import React, { useState, ChangeEvent } from "react";
+import { useAuth } from "./cotexts/AuthContext";
 import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -8,8 +9,9 @@ import TextField from "@mui/material/TextField";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Button from "./Button";
+import Axios from "axios"; // Import Axios
 
-import { TabProps } from '@mui/material/Tab';
+import { TabProps } from "@mui/material/Tab";
 interface StyledTabProps extends TabProps {}
 
 const StyledTabs = styled(Tabs)({
@@ -21,27 +23,27 @@ const StyledTabs = styled(Tabs)({
   "& .MuiTabs-indicatorSpan": {
     maxWidth: 40,
     width: "100%",
-    backgroundColor: "rgba(255, 118, 0, 0.6)", 
+    backgroundColor: "rgba(255, 118, 0, 0.6)",
   },
 });
 
 const StyledTab = styled((props: StyledTabProps) => (
-    <Tab disableRipple {...props} />
-  ))(() => ({
-    textTransform: "none",
-    fontWeight: "bold",
-    color: "rgba(0, 0, 0, 0.85)",
-    "&:hover": {
-      color: "rgba(255, 118, 0, 0.6)",
-      opacity: 1,
-    },
-    "&.Mui-selected": {
-      color: "rgba(255, 118, 0, 0.6)",
-    },
-    "&.Mui-focusVisible": {
-      backgroundColor: "#d1eaff",
-    },
-  }));
+  <Tab disableRipple {...props} />
+))(() => ({
+  textTransform: "none",
+  fontWeight: "bold",
+  color: "rgba(0, 0, 0, 0.85)",
+  "&:hover": {
+    color: "rgba(255, 118, 0, 0.6)",
+    opacity: 1,
+  },
+  "&.Mui-selected": {
+    color: "rgba(255, 118, 0, 0.6)",
+  },
+  "&.Mui-focusVisible": {
+    backgroundColor: "#d1eaff",
+  },
+}));
 
 const AuthTabs = {
   Login: "login",
@@ -61,12 +63,64 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
   activeTab,
   onChangeActiveTab,
 }) => {
+  const { login } = useAuth(); // Use the useAuth hook to access login function
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [name, setName] = useState(""); // Declare 'name' variable for Full Name
   const isPasswordMatch = password === confirmPassword;
 
   const handleChangeTab = (event: ChangeEvent<{}>, newValue: string) => {
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+    setName("");
     onChangeActiveTab(newValue);
+  };
+
+  // Function to handle login
+  const handleLogin = async () => {
+    try {
+      const response = await Axios.post("http://127.0.0.1:8000/api/login", {
+        email,
+        password,
+      });
+      // Handle success response
+      console.log(response.data);
+      const { token, user } = response.data;
+      login({ username: user.name, token }); // Assuming 'user.name' is the username
+
+      onClose(); // Close the dialog after successful login
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+      setName("");
+    } catch (error) {
+      // Handle error
+      console.error("Login failed:", error);
+    }
+  };
+
+  // Function to handle registration
+  const handleRegister = async () => {
+    try {
+      const response = await Axios.post("http://127.0.0.1:8000/api/register", {
+        name,
+        email,
+        password,
+        confirmPassword,
+      });
+      // Handle success response
+      console.log(response.data);
+      onClose(); // Close the dialog after successful registration
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+      setName("");
+    } catch (error) {
+      // Handle error
+      console.error("Registration failed:", error);
+    }
   };
 
   return (
@@ -110,14 +164,15 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
                 label="Email Address"
                 type="email"
                 fullWidth
+                onChange={(e) => setEmail(e.target.value)}
               />
               <TextField
                 margin="dense"
                 label="Password"
                 type="password"
                 fullWidth
+                onChange={(e) => setPassword(e.target.value)}
               />
-              {/* Add additional login fields if necessary */}
             </>
           )}
           {activeTab === AuthTabs.Register && (
@@ -128,18 +183,21 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
                 label="Full Name"
                 type="text"
                 fullWidth
+                onChange={(e) => setName(e.target.value)}
               />
               <TextField
                 margin="dense"
                 label="Email Address"
                 type="email"
                 fullWidth
+                onChange={(e) => setEmail(e.target.value)}
               />
               <TextField
                 margin="dense"
                 label="Password"
                 type="password"
                 fullWidth
+                onChange={(e) => setPassword(e.target.value)}
               />
               <TextField
                 margin="dense"
@@ -151,7 +209,6 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
                 error={!isPasswordMatch}
                 helperText={!isPasswordMatch ? "Passwords do not match" : ""}
               />
-              {/* Add additional registration fields if necessary */}
             </>
           )}
         </DialogContent>
@@ -166,7 +223,13 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
             type="submit"
             title={activeTab === AuthTabs.Login ? "Login" : "Register"}
             variant="btn_login"
-            onClick={onClose}
+            onClick={() => {
+              if (activeTab === AuthTabs.Login) {
+                handleLogin();
+              } else {
+                handleRegister();
+              }
+            }}
           />
         </DialogActions>
       </Dialog>

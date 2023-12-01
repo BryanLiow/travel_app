@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, ChangeEvent } from "react";
-
+import { useAuth } from "./cotexts/AuthContext";
 import { usePathname } from "next/navigation";
 import { NAV_LINKS } from "@/constants";
 import Image from "next/image";
@@ -17,14 +17,21 @@ const AuthTabs = {
 
 const Navbar = () => {
   const currentRoute = usePathname();
+  const { user, logout } = useAuth();
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const [authTab, setAuthTab] = useState(AuthTabs.Login);
 
   const handleAuthDialogToggle = () => {
     setAuthDialogOpen(!authDialogOpen);
     if (!authDialogOpen) {
-      setAuthTab(AuthTabs.Login); // Reset the tab to 'Login' when opening the dialog
+      setAuthTab(AuthTabs.Login);
     }
+  };
+
+  const handleLogout = () => {
+    // Call the logout function when the logout button is clicked
+    console.log("logout...");
+    logout();
   };
 
   return (
@@ -61,13 +68,23 @@ const Navbar = () => {
           ))}
         </ul>
         <div className="lg:flexCenter hidden">
-          <Button
-            type="button"
-            title="Login"
-            icon={<PersonIcon />} // Corrected syntax
-            variant="btn_login"
-            onClick={handleAuthDialogToggle}
-          />
+          {user?.token ? ( // Check if user token exists
+            <Button
+              type="button"
+              title="Logout"
+              icon={<PersonIcon />}
+              variant="btn_logout" // Change to "btn_logout" or your appropriate variant
+              onClick={handleLogout} // Call the logout function on click
+            />
+          ) : (
+            <Button
+              type="button"
+              title="Login"
+              icon={<PersonIcon />}
+              variant="btn_login"
+              onClick={handleAuthDialogToggle}
+            />
+          )}
         </div>
         <AuthPortal
           open={authDialogOpen}
