@@ -11,18 +11,71 @@ import GradeIcon from "@mui/icons-material/Grade";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import Link from "next/link";
 import SettingsIcon from "@mui/icons-material/Settings";
+import Axios from "axios";
+
+interface UserData {
+  id: number;
+  name: string;
+  email: string;
+  username: string;
+  headline: string;
+  gender: string;
+  country: string;
+  email_verified_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("work");
   const [linePosition, setLinePosition] = useState({ left: 0, width: 0 });
+  const [userData, setUserData] = useState<UserData | null>(null);
   const tabsRef = useRef<{ [key: string]: HTMLButtonElement | null }>({});
 
   const tabs = {
     work: <GridOnIcon />,
     favourite: <GradeIcon />, // Assuming you want an icon for "favourite" too
   };
+
   useEffect(() => {
-    // Calculate the position and width of the underline
+    // Retrieve the token data from localStorage
+    const tokenData = localStorage.getItem("token");
+
+    if (tokenData) {
+      let parsedTokenData;
+      try {
+        // Parse the token data from JSON
+        parsedTokenData = JSON.parse(tokenData);
+      } catch (error) {
+        console.error("Error parsing token data:", error);
+        return;
+      }
+
+      const { token, expiry } = parsedTokenData;
+
+      // Check if the token has expired
+      if (expiry && Date.now() > expiry) {
+        console.error("Token expired");
+        // Handle expired token (e.g., redirect to login)
+        return;
+      }
+
+      // Use the token in the API call
+      Axios.get("http://127.0.0.1:8000/api/user", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((response) => {
+          // Handle success
+          setUserData(response.data); // Set the user data in the state
+        })
+        .catch((error) => {
+          // Handle error
+          console.error("There was an error!", error);
+        });
+    }
+
     const tab = tabsRef.current[activeTab];
     if (tab) {
       setLinePosition({
@@ -106,8 +159,10 @@ const Profile = () => {
           {/* Wrapper with a background to ensure text color is white regardless of parent opacity */}
           <div className="z-10 bg-transparent flex items-center">
             <div>
-              <h2 className="text-3xl font-semibold text-white">Ze Yan</h2>
-              <p className="text-sm text-white">username: bryanlzy</p>
+              <h2 className="text-3xl font-semibold text-white">
+                {userData?.name}
+              </h2>
+              <p className="text-sm text-white">@{userData?.username}</p>
             </div>
             <Link href="/editProfile" legacyBehavior>
               <a className="flex justify-center items-center text-white px-3 py-1 ml-2">
@@ -120,10 +175,7 @@ const Profile = () => {
       <div className="mx-2 my-4">
         <div className="bg-white rounded-t-lg">
           <div className="p-4">
-            {/* Stats Bar */}
-            <div className="flex justify-around py-3 text-sm bg-white">
-              {" "}
-              {/* Made text bold */}
+            {/* <div className="flex justify-around py-3 text-sm bg-white">
               <span>
                 <span className="font-bold">5 </span>likes
               </span>
@@ -136,18 +188,17 @@ const Profile = () => {
               <span>
                 <span className="font-bold">25 </span>following
               </span>
-            </div>
-            {/* Bio and Location */}
+            </div> */}
             <div className="p-4 bg-white">
               <div className="mb-2 font-sans">
-                <span>This is headline</span>
+                <span>{userData?.headline}</span>
               </div>
               <div className="flex text-sm mb-2">
                 <span className="bg-gray-600 text-white py-1 px-2 rounded-lg mr-2">
                   <MaleIcon className="text-blue-400" /> Man
                 </span>
                 <span className="bg-gray-600 text-white py-1 px-2 rounded-lg mr-2">
-                  <LanguageIcon /> Ireland
+                  <LanguageIcon /> {userData?.country}
                 </span>
               </div>
 

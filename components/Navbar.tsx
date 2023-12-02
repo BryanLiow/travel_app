@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, ChangeEvent } from "react";
 import { useAuth } from "./cotexts/AuthContext";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { NAV_LINKS } from "@/constants";
 import Image from "next/image";
 import Link from "next/link";
@@ -16,21 +16,28 @@ const AuthTabs = {
 };
 
 const Navbar = () => {
+  const router = useRouter();
   const currentRoute = usePathname();
-  const { user, logout } = useAuth();
-  const [authDialogOpen, setAuthDialogOpen] = useState(false);
+  const { user, logout, authDialogOpen, toggleAuthDialog } = useAuth();
   const [authTab, setAuthTab] = useState(AuthTabs.Login);
 
   const handleAuthDialogToggle = () => {
-    setAuthDialogOpen(!authDialogOpen);
     if (!authDialogOpen) {
       setAuthTab(AuthTabs.Login);
+      toggleAuthDialog();
+    }
+  };
+
+  const handleProfileClick = () => {
+    if (!user?.token) {
+      toggleAuthDialog(); // Also toggle the dialog open
+    } else {
+      router.push("/profile"); // Navigate to Profile if logged in
     }
   };
 
   const handleLogout = () => {
     // Call the logout function when the logout button is clicked
-    console.log("logout...");
     logout();
   };
 
@@ -54,27 +61,50 @@ const Navbar = () => {
           </button>
         </div>
         <ul className="hidden h-full gap-12 lg:flex">
-          {NAV_LINKS.map((link) => (
-            <Link href={link.href} key={link.key} legacyBehavior>
-              <a
-                className={`regular-16 text-gray-50 flexCenter cursor-pointer pb-1.5 transition-all hover:font-bold ${
-                  currentRoute === link.href ? "text-black !font-semibold" : ""
-                }`}
+          {NAV_LINKS.map((link) => {
+            const isProfileLink = link.label === "Profile";
+            return (
+              <li
+                key={link.key}
+                onClick={isProfileLink ? handleProfileClick : null}
               >
-                {link.Icon && <link.Icon className="mr-2" />}
-                {link.label}
-              </a>
-            </Link>
-          ))}
+                {isProfileLink ? (
+                  <a
+                    className={`regular-16 text-gray-50 flexCenter cursor-pointer pb-1.5 transition-all hover:font-bold ${
+                      currentRoute === link.href
+                        ? "text-black !font-semibold"
+                        : ""
+                    }`}
+                  >
+                    {link.Icon && <link.Icon className="mr-2" />}
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link href={link.href} legacyBehavior>
+                    <a
+                      className={`regular-16 text-gray-50 flexCenter cursor-pointer pb-1.5 transition-all hover:font-bold ${
+                        currentRoute === link.href
+                          ? "text-black !font-semibold"
+                          : ""
+                      }`}
+                    >
+                      {link.Icon && <link.Icon className="mr-2" />}
+                      {link.label}
+                    </a>
+                  </Link>
+                )}
+              </li>
+            );
+          })}
         </ul>
         <div className="lg:flexCenter hidden">
-          {user?.token ? ( // Check if user token exists
+          {user?.token ? (
             <Button
               type="button"
               title="Logout"
               icon={<PersonIcon />}
-              variant="btn_logout" // Change to "btn_logout" or your appropriate variant
-              onClick={handleLogout} // Call the logout function on click
+              variant="btn_logout"
+              onClick={handleLogout}
             />
           ) : (
             <Button
@@ -88,10 +118,10 @@ const Navbar = () => {
         </div>
         <AuthPortal
           open={authDialogOpen}
-          onClose={handleAuthDialogToggle}
+          onClose={toggleAuthDialog}
           activeTab={authTab}
           onChangeActiveTab={setAuthTab}
-        />{" "}
+        />
         <Image
           src="menu.svg"
           alt="menu"

@@ -9,7 +9,7 @@ import TextField from "@mui/material/TextField";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Button from "./Button";
-import Axios from "axios"; // Import Axios
+import Axios from "axios";
 
 import { TabProps } from "@mui/material/Tab";
 interface StyledTabProps extends TabProps {}
@@ -63,18 +63,22 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
   activeTab,
   onChangeActiveTab,
 }) => {
-  const { login } = useAuth(); // Use the useAuth hook to access login function
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [name, setName] = useState(""); // Declare 'name' variable for Full Name
+  const [username, setUsername] = useState("");
+  const [loginError, setLoginError] = useState("");
+  const [registerError, setRegisterError] = useState("");
   const isPasswordMatch = password === confirmPassword;
 
   const handleChangeTab = (event: ChangeEvent<{}>, newValue: string) => {
     setEmail("");
     setPassword("");
     setConfirmPassword("");
-    setName("");
+    setUsername("");
+    setLoginError("");
+    setRegisterError("");
     onChangeActiveTab(newValue);
   };
 
@@ -88,28 +92,32 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
       // Handle success response
       console.log(response.data);
       const { token, user } = response.data;
-      login({ username: user.name, token }); // Assuming 'user.name' is the username
+      const expiryTimestamp = new Date().getTime() + 60 * 60 * 1000;
 
-      onClose(); // Close the dialog after successful login
+      login({ username: user.username, token, expiry: expiryTimestamp });
+
+      onClose();
       setEmail("");
       setPassword("");
       setConfirmPassword("");
-      setName("");
+      setUsername("");
     } catch (error) {
-      // Handle error
-      console.error("Login failed:", error);
+      if (Axios.isAxiosError(error) && error.response) {
+        // Extracting the API response message
+        const apiErrorMessage = error.response.data.message;
+        setLoginError(apiErrorMessage);
+      } else {
+        // Fallback error message
+        setLoginError("An unknown error occurred");
+      }
     }
   };
 
   // Function to handle registration
   const handleRegister = async () => {
-    console.log(name);
-    console.log(email);
-    console.log(password);
-    console.log(confirmPassword);
     try {
       const response = await Axios.post("http://127.0.0.1:8000/api/register", {
-        name: name,
+        username: username,
         email: email,
         password: password,
         password_confirmation: confirmPassword,
@@ -121,10 +129,16 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
       setEmail("");
       setPassword("");
       setConfirmPassword("");
-      setName("");
+      setUsername("");
     } catch (error) {
-      // Handle error
-      console.error("Registration failed:", error);
+      if (Axios.isAxiosError(error) && error.response) {
+        // Extracting the API response message
+        const apiErrorMessage = error.response.data.message;
+        setRegisterError(apiErrorMessage);
+      } else {
+        // Fallback error message
+        setRegisterError("An unknown error occurred");
+      }
     }
   };
 
@@ -178,6 +192,7 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
                 fullWidth
                 onChange={(e) => setPassword(e.target.value)}
               />
+              {loginError && <div className="text-red-500">{loginError}</div>}
             </>
           )}
           {activeTab === AuthTabs.Register && (
@@ -185,10 +200,10 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
               <TextField
                 autoFocus
                 margin="dense"
-                label="Full Name"
+                label="Username"
                 type="text"
                 fullWidth
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => setUsername(e.target.value)}
               />
               <TextField
                 margin="dense"
@@ -214,6 +229,9 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
                 error={!isPasswordMatch}
                 helperText={!isPasswordMatch ? "Passwords do not match" : ""}
               />
+              {registerError && (
+                <div className="text-red-500">{registerError}</div>
+              )}
             </>
           )}
         </DialogContent>
