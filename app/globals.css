@@ -32,7 +32,7 @@ body {
   .btn_cancel {
     @apply bg-gray-300 text-black transition-all hover:bg-gray-400; /* Lighter grey for better contrast */
   }
-  
+
   .btn_dark_green_outline {
     @apply border-gray-20 bg-green-90 px-8 py-5 text-white;
   }
@@ -164,27 +164,27 @@ body {
 
 /* Home Card Content Heights */
 .card-content-media-height-1 {
-  height: 200px;
+  height: 100px;
 }
 
 .card-content-media-height-2 {
-  height: 350px;
+  height: 150px;
 }
 
 .card-content-media-height-3 {
-  height: 450px;
+  height: 250px;
 }
 
 .card-content-media-height-4 {
-  height: 550px;
+  height: 350px;
 }
 
 /* Custom CSS for Home Container */
 .home-container {
-  column-count: 5; /* Adjust the number of columns based on your design */
-  column-gap: 18px;
+  column-count: 2; /* Adjust the number of columns based on your design */
+  column-gap: 2px;
   width: 100%;
-  padding: 18px;
+  padding: 2px;
 }
 
 /* Custom CSS for Content Card Container */
@@ -200,4 +200,30 @@ body {
 
 .dialog-transition {
   transition: all 0.3s ease-out;
+}
+
+/* Heights for large (lg) screens and up */
+@media (min-width: 1024px) {
+  .card-content-media-height-1 {
+    height: 200px;
+  }
+
+  .card-content-media-height-2 {
+    height: 350px;
+  }
+
+  .card-content-media-height-3 {
+    height: 450px;
+  }
+
+  .card-content-media-height-4 {
+    height: 550px;
+  }
+
+  .home-container {
+    column-count: 5; /* Adjust the number of columns based on your design */
+    column-gap: 18px;
+    width: 100%;
+    padding: 18px;
+  }
 }

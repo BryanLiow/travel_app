@@ -90,7 +90,7 @@ const Profile = () => {
       case "work":
         return (
           <div className="p-4">
-            <div className="grid grid-cols-5 gap-5">
+            <div className="grid grid-cols-2 gap-1 lg:grid-cols-5">
               <Card
                 className="rounded-xl border-solid border-1 border-gray-900 flex justify-center items-center shadow-full hover:cursor-pointer"
                 sx={{ maxWidth: 345 }}
@@ -98,8 +98,7 @@ const Profile = () => {
                 <AddCircleOutlineIcon
                   fontSize="large"
                   className="text-gray-400"
-                />{" "}
-                {/* Plus icon in the middle */}
+                />
               </Card>
               {HOME_CONTENT_CARD.map((contentCard, index) => (
                 <div>
@@ -121,7 +120,7 @@ const Profile = () => {
       case "favourite":
         return (
           <div className="p-4">
-            <div className="grid grid-cols-5 gap-5">
+            <div className="grid grid-cols-2 gap-1 lg:grid-cols-5">
               {HOME_CONTENT_CARD.map((contentCard, index) => (
                 <div>
                   <ContentCard
@@ -154,7 +153,7 @@ const Profile = () => {
           <img
             src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
             alt="Profile"
-            className="z-10 w-44 h-44 rounded-full border-4 border-white shadow-sm"
+            className="z-10 w-32 h-32 lg:w-44 lg:h-44 rounded-full border-4 border-white shadow-sm"
           />
           {/* Wrapper with a background to ensure text color is white regardless of parent opacity */}
           <div className="z-10 bg-transparent flex items-center">
@@ -174,7 +173,7 @@ const Profile = () => {
       </div>
       <div className="mx-2 my-4">
         <div className="bg-white rounded-t-lg">
-          <div className="p-4">
+          <div className="p-1 lg:p-4">
             {/* <div className="flex justify-around py-3 text-sm bg-white">
               <span>
                 <span className="font-bold">5 </span>likes
@@ -189,7 +188,7 @@ const Profile = () => {
                 <span className="font-bold">25 </span>following
               </span>
             </div> */}
-            <div className="p-4 bg-white">
+            <div className="p-1 bg-white lg:p-4">
               <div className="mb-2 font-sans">
                 <span>{userData?.headline}</span>
               </div>
