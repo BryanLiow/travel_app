@@ -68,15 +68,14 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [fullName, setFullName] = useState("");
   const [loginError, setLoginError] = useState("");
   const [registerError, setRegisterError] = useState("");
   const isPasswordMatch = password === confirmPassword;
 
   const handleChangeTab = (event: ChangeEvent<{}>, newValue: string) => {
-    setEmail("");
     setPassword("");
     setConfirmPassword("");
-    setUsername("");
     setLoginError("");
     setRegisterError("");
     onChangeActiveTab(newValue);
@@ -99,6 +98,7 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
       onClose();
       setEmail("");
       setPassword("");
+      setFullName("");
       setConfirmPassword("");
       setUsername("");
     } catch (error) {
@@ -118,6 +118,7 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
     try {
       const response = await Axios.post("http://127.0.0.1:8000/api/register", {
         username: username,
+        name: fullName,
         email: email,
         password: password,
         password_confirmation: confirmPassword,
@@ -130,6 +131,7 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
       setPassword("");
       setConfirmPassword("");
       setUsername("");
+      setFullName("");
     } catch (error) {
       if (Axios.isAxiosError(error) && error.response) {
         // Extracting the API response message
@@ -150,7 +152,7 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
         aria-labelledby="form-dialog-title"
         PaperProps={{
           style: {
-            height: "550px",
+            height: "580px",
             maxWidth: "600px",
             width: "100%",
             borderRadius: "16px",
@@ -204,6 +206,13 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
                 type="text"
                 fullWidth
                 onChange={(e) => setUsername(e.target.value)}
+              />
+              <TextField
+                margin="dense"
+                label="Full Name"
+                type="text"
+                fullWidth
+                onChange={(e) => setFullName(e.target.value)}
               />
               <TextField
                 margin="dense"

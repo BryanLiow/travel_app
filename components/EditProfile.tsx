@@ -14,6 +14,8 @@ import { countries } from "countries-list";
 import { styled } from "@mui/material/styles";
 import Axios from "axios";
 import Button from "./Button";
+import { Snackbar, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 interface Country {
   label: string;
@@ -29,10 +31,28 @@ const ProfileContainer = styled(Box)(({ theme }) => ({
 
 const EditProfile = () => {
   const [country, setCountry] = useState<Country | null>(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [countriesList, setCountriesList] = useState<Country[]>([]);
   const [fullName, setFullName] = useState("");
   const [headline, setHeadline] = useState("");
   const [gender, setGender] = useState("");
+  const findCountryObject = (countryName: string) => {
+    return (
+      countriesList.find(
+        (country) => country.label.toLowerCase() === countryName.toLowerCase()
+      ) || null
+    );
+  };
+
+  const handleCloseSnackbar = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
 
   useEffect(() => {
     const countryData: Country[] = Object.values(countries).map((country) => ({
@@ -40,7 +60,60 @@ const EditProfile = () => {
       value: country.continent,
     }));
     setCountriesList(countryData);
-  }, []);
+  }, []); // Runs only once on component mount
+
+  // This useEffect is for fetching user data
+  useEffect(() => {
+    // Ensure countriesList is populated before making the user data fetch
+    if (countriesList.length > 0) {
+      const tokenData = localStorage.getItem("token");
+      if (tokenData) {
+        let parsedTokenData;
+        try {
+          parsedTokenData = JSON.parse(tokenData);
+        } catch (error) {
+          console.error("Error parsing token data:", error);
+          return;
+        }
+
+        const { token, expiry } = parsedTokenData;
+        if (expiry && Date.now() > expiry) {
+          console.error("Token expired");
+          return;
+        }
+
+        Axios.get("http://127.0.0.1:8000/api/user", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((response) => {
+            const fetchedUserData = response.data;
+            setFullName(fetchedUserData.name || "");
+            setHeadline(fetchedUserData.headline || "");
+            setGender(fetchedUserData.gender || "");
+            const countryObj = findCountryObject(fetchedUserData.country || "");
+            setCountry(countryObj);
+          })
+          .catch((error) => {
+            console.error("There was an error!", error);
+          });
+      }
+    }
+  }, [countriesList]); // This useEffect depends on countriesList
+
+  const action = (
+    <React.Fragment>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleCloseSnackbar}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </React.Fragment>
+  );
 
   const handleCountryChange = (
     _event: React.SyntheticEvent<Element, Event>,
@@ -50,48 +123,72 @@ const EditProfile = () => {
   };
 
   const handleUpdateProfile = () => {
-    const token = sessionStorage.getItem("token");
-    if (!token) {
-      console.log("No authorization token found");
-      return;
-    }
+    const tokenData = localStorage.getItem("token");
 
-    const headers = {
-      Authorization: `Bearer ${token}`,
-    };
+    if (tokenData) {
+      let parsedTokenData;
+      try {
+        // Parse the token data from JSON
+        parsedTokenData = JSON.parse(tokenData);
+      } catch (error) {
+        console.error("Error parsing token data:", error);
+        return;
+      }
 
-    const data = {
-      fullName,
-      country: country?.label, // Assuming country is an object with a 'label' property
-      headline,
-      gender,
-    };
+      const { token, expiry } = parsedTokenData;
 
-    Axios.post("http://127.0.0.1:8000/api/update-profile", data, { headers })
-      .then((response) => {
-        console.log("Profile updated successfully:", response.data);
+      // Check if the token has expired
+      if (expiry && Date.now() > expiry) {
+        console.error("Token expired");
+        // Handle expired token (e.g., redirect to login)
+        return;
+      }
+
+      const data = {
+        name: fullName,
+        country: country?.label, // Assuming country is an object with a 'label' property
+        headline: headline,
+        gender: gender,
+      };
+
+      Axios.post("http://127.0.0.1:8000/api/updateprofile", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
-      .catch((error) => {
-        console.error("Error updating profile:", error);
-      });
+        .then((response) => {
+          console.log("Profile updated successfully:", response.data);
+          setSnackbarOpen(true);
+        })
+        .catch((error) => {
+          console.error("Error updating profile:", error);
+        });
+    }
   };
 
   return (
     <ProfileContainer>
-        <div
-          className="relative bg-cover bg-center p-4 h-50"
-          style={{ backgroundImage: "url('/path-to-timeline-image.jpg')" }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-b from-gray-50 via-gray-90 to-black opacity-80"></div>
-          <div className="flex justify-center items-center space-x-4 pl-4 h-full">
-            <img
-              src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-              alt="Profile"
-              className="z-10 w-44 h-44 rounded-full border-4 border-white shadow-sm"
-            />
-          </div>
+      <div
+        className="relative bg-cover bg-center p-4 h-50"
+        style={{ backgroundImage: "url('/path-to-timeline-image.jpg')" }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-b from-gray-50 via-gray-90 to-black opacity-80"></div>
+        <div className="flex justify-center items-center space-x-4 pl-4 h-full">
+          <img
+            src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+            alt="Profile"
+            className="z-10 w-44 h-44 rounded-full border-4 border-white shadow-sm"
+          />
         </div>
-
+      </div>
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        message="Profile updated successfully"
+        action={action}
+      />
       <form noValidate autoComplete="off">
         <TextField
           fullWidth
@@ -113,7 +210,7 @@ const EditProfile = () => {
               variant="outlined"
             />
           )}
-          value={country}
+          value={country} // Use the country state here
           onChange={handleCountryChange}
         />
         <TextField
@@ -130,7 +227,7 @@ const EditProfile = () => {
             labelId="gender-label"
             id="gender-select"
             label="Gender"
-            value={gender}
+            value={gender} // Use the gender state here
             onChange={(e) => setGender(e.target.value)}
           >
             <MenuItem value="male">Male</MenuItem>
@@ -140,7 +237,7 @@ const EditProfile = () => {
         </FormControl>
         <div className="mt-7 flex justify-center">
           <Button
-            type="submit"
+            type="button" // Change type to "button" to prevent form submission
             title="Update Profile"
             variant="btn_login"
             onClick={handleUpdateProfile}
