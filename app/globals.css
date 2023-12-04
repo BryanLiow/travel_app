@@ -178,6 +178,19 @@ body {
 .card-content-media-height-4 {
   height: 350px;
 }
+/* In your CSS or style objects, define styles for the custom dots: */
+
+.custom-dots .dot {
+  width: 10px;
+  height: 10px;
+  background: #a9a9a9;
+  border-radius: 50%;
+  margin: 0px;
+}
+
+.custom-dots li.slick-active .dot {
+  background: #000;
+}
 
 /* Custom CSS for Home Container */
 .home-container {

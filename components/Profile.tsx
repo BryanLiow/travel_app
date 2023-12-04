@@ -1,11 +1,13 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Card from "@mui/material/Card";
 import { HOME_CONTENT_CARD } from "@/constants";
 import ContentCard from "./ContentCard";
 import LanguageIcon from "@mui/icons-material/Language";
 import MaleIcon from "@mui/icons-material/Male";
 import FemaleIcon from "@mui/icons-material/Female";
+import TransgenderIcon from "@mui/icons-material/Transgender";
 import GridOnIcon from "@mui/icons-material/GridOn";
 import GradeIcon from "@mui/icons-material/Grade";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
@@ -27,6 +29,7 @@ interface UserData {
 }
 
 const Profile = () => {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("work");
   const [linePosition, setLinePosition] = useState({ left: 0, width: 0 });
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -34,46 +37,45 @@ const Profile = () => {
 
   const tabs = {
     work: <GridOnIcon />,
-    favourite: <GradeIcon />, // Assuming you want an icon for "favourite" too
+    favourite: <GradeIcon />,
   };
 
   useEffect(() => {
-    // Retrieve the token data from localStorage
-    const tokenData = localStorage.getItem("token");
+    // Check for user data in session storage
+    const sessionUserData = sessionStorage.getItem("userData");
+    if (sessionUserData) {
+      setUserData(JSON.parse(sessionUserData));
+    } else {
+      const tokenData = localStorage.getItem("token");
+      if (tokenData) {
+        let parsedTokenData;
+        try {
+          parsedTokenData = JSON.parse(tokenData);
+        } catch (error) {
+          console.error("Error parsing token data:", error);
+          return;
+        }
 
-    if (tokenData) {
-      let parsedTokenData;
-      try {
-        // Parse the token data from JSON
-        parsedTokenData = JSON.parse(tokenData);
-      } catch (error) {
-        console.error("Error parsing token data:", error);
-        return;
-      }
+        const { token, expiry } = parsedTokenData;
+        if (expiry && Date.now() > expiry) {
+          console.error("Token expired");
+          // Handle expired token (e.g., redirect to login)
+          return;
+        }
 
-      const { token, expiry } = parsedTokenData;
-
-      // Check if the token has expired
-      if (expiry && Date.now() > expiry) {
-        console.error("Token expired");
-        // Handle expired token (e.g., redirect to login)
-        return;
-      }
-
-      // Use the token in the API call
-      Axios.get("http://127.0.0.1:8000/api/user", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+        Axios.get("http://127.0.0.1:8000/api/user", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         .then((response) => {
-          // Handle success
-          setUserData(response.data); // Set the user data in the state
+          setUserData(response.data);
+          sessionStorage.setItem("userData", JSON.stringify(response.data));
         })
         .catch((error) => {
-          // Handle error
           console.error("There was an error!", error);
         });
+      }
     }
 
     const tab = tabsRef.current[activeTab];
@@ -94,6 +96,7 @@ const Profile = () => {
               <Card
                 className="rounded-xl border-solid border-1 border-gray-900 flex justify-center items-center shadow-full hover:cursor-pointer"
                 sx={{ maxWidth: 345 }}
+                onClick={() => router.push("/create-post")}
               >
                 <AddCircleOutlineIcon
                   fontSize="large"
@@ -163,7 +166,7 @@ const Profile = () => {
               </h2>
               <p className="text-sm text-white">@{userData?.username}</p>
             </div>
-            <Link href="/editProfile" legacyBehavior>
+            <Link href="/edit-profile" legacyBehavior>
               <a className="flex justify-center items-center text-white px-3 py-1 ml-2">
                 <SettingsIcon />
               </a>
@@ -194,7 +197,15 @@ const Profile = () => {
               </div>
               <div className="flex text-sm mb-2">
                 <span className="bg-gray-600 text-white py-1 px-2 rounded-lg mr-2">
-                  <MaleIcon className="text-blue-400" /> Man
+                  {userData?.gender == "male" && (
+                    <MaleIcon className="text-blue-400" />
+                  )}
+                  {userData?.gender == "female" && (
+                    <FemaleIcon className="text-blue-400" />
+                  )}
+                  {userData?.gender == "other" && (
+                    <TransgenderIcon className="text-blue-400" />
+                  )}
                 </span>
                 <span className="bg-gray-600 text-white py-1 px-2 rounded-lg mr-2">
                   <LanguageIcon /> {userData?.country}

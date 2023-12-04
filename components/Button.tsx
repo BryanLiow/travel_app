@@ -15,7 +15,8 @@ const Button = ({ type, title, icon, variant, onClick }: ButtonProps) => {
       className={`!py-2 !px-5 flexCenter gap-8 rounded-full border ${variant} hover:cursor-pointer`}
       onClick={onClick}
     >
-      <label className="bold-16 whitespace-nowrap hover:cursor-pointer">{title}</label>
+  
+      <label className="bold-16 whitespace-nowrap hover:cursor-pointer">{icon} {title}</label>
     </button>
   );
 };
