@@ -54,11 +54,11 @@ const Navbar = () => {
           <Image src="/logo.png" alt="logo" width={124} height={50} />
         </Link>
         <div className="relative lg:flex items-center mx-2">
-          <input
+          {/* <input
             type="search"
             placeholder="Search..."
             className="px-4 py-2 border border-gray-300 rounded-md"
-          />
+          /> */}
           <button
             type="submit"
             className="absolute right-2 top-2 text-gray-600"
