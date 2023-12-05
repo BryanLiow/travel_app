@@ -130,9 +130,6 @@ const Profile = () => {
                 <span className="font-bold">5 </span>likes
               </span>
               <span>
-                <span className="font-bold">3 </span>friends
-              </span>
-              <span>
                 <span className="font-bold">35 </span>followers
               </span>
               <span>
