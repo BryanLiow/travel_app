@@ -53,10 +53,6 @@ const CreatePost: React.FC = () => {
     setKey((prevKey) => prevKey + 1); // Change key to force re-render
   }, [imagePreviews]); // Dependency on imagePreviews
 
-  useEffect(() => {
-    fileInputRef.current?.click();
-  }, []);
-
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       const files = Array.from(event.target.files);

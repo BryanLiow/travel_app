@@ -1,28 +1,83 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Card from "@mui/material/Card";
 import { HOME_CONTENT_CARD } from "@/constants";
 import ContentCard from "./ContentCard";
 import LanguageIcon from "@mui/icons-material/Language";
 import MaleIcon from "@mui/icons-material/Male";
 import FemaleIcon from "@mui/icons-material/Female";
+import TransgenderIcon from "@mui/icons-material/Transgender";
 import GridOnIcon from "@mui/icons-material/GridOn";
 import GradeIcon from "@mui/icons-material/Grade";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import Link from "next/link";
 import SettingsIcon from "@mui/icons-material/Settings";
+import Axios from "axios";
+
+interface UserData {
+  id: number;
+  name: string;
+  email: string;
+  username: string;
+  headline: string;
+  gender: string;
+  country: string;
+  email_verified_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
 
 const Profile = () => {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("work");
   const [linePosition, setLinePosition] = useState({ left: 0, width: 0 });
+  const [userData, setUserData] = useState<UserData | null>(null);
   const tabsRef = useRef<{ [key: string]: HTMLButtonElement | null }>({});
 
   const tabs = {
     work: <GridOnIcon />,
-    favourite: <GradeIcon />, // Assuming you want an icon for "favourite" too
+    favourite: <GradeIcon />,
   };
+
   useEffect(() => {
-    // Calculate the position and width of the underline
+    // Check for user data in session storage
+    const sessionUserData = sessionStorage.getItem("userData");
+    if (sessionUserData) {
+      setUserData(JSON.parse(sessionUserData));
+    } else {
+      const tokenData = localStorage.getItem("token");
+      if (tokenData) {
+        let parsedTokenData;
+        try {
+          parsedTokenData = JSON.parse(tokenData);
+        } catch (error) {
+          console.error("Error parsing token data:", error);
+          return;
+        }
+
+        const { token, expiry } = parsedTokenData;
+        if (expiry && Date.now() > expiry) {
+          console.error("Token expired");
+          // Handle expired token (e.g., redirect to login)
+          return;
+        }
+
+        Axios.get("http://127.0.0.1:8000/api/user", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((response) => {
+            setUserData(response.data);
+            sessionStorage.setItem("userData", JSON.stringify(response.data));
+          })
+          .catch((error) => {
+            console.error("There was an error!", error);
+          });
+      }
+    }
+
     const tab = tabsRef.current[activeTab];
     if (tab) {
       setLinePosition({
@@ -37,16 +92,16 @@ const Profile = () => {
       case "work":
         return (
           <div className="p-4">
-            <div className="grid grid-cols-5 gap-5">
+            <div className="grid grid-cols-2 gap-1 lg:grid-cols-5">
               <Card
                 className="rounded-xl border-solid border-1 border-gray-900 flex justify-center items-center shadow-full hover:cursor-pointer"
                 sx={{ maxWidth: 345 }}
+                onClick={() => router.push("/create-post")}
               >
                 <AddCircleOutlineIcon
                   fontSize="large"
                   className="text-gray-400"
-                />{" "}
-                {/* Plus icon in the middle */}
+                />
               </Card>
               {HOME_CONTENT_CARD.map((contentCard, index) => (
                 <div>
@@ -69,7 +124,7 @@ const Profile = () => {
       case "favourite":
         return (
           <div className="p-4">
-            <div className="grid grid-cols-5 gap-5">
+            <div className="grid grid-cols-2 gap-1 lg:grid-cols-5">
               {HOME_CONTENT_CARD.map((contentCard, index) => (
                 <div>
                   <ContentCard
@@ -103,15 +158,17 @@ const Profile = () => {
           <img
             src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
             alt="Profile"
-            className="z-10 w-44 h-44 rounded-full border-4 border-white shadow-sm"
+            className="z-10 w-32 h-32 lg:w-44 lg:h-44 rounded-full border-4 border-white shadow-sm"
           />
           {/* Wrapper with a background to ensure text color is white regardless of parent opacity */}
           <div className="z-10 bg-transparent flex items-center">
             <div>
-              <h2 className="text-3xl font-semibold text-white">Ze Yan</h2>
-              <p className="text-sm text-white">username: bryanlzy</p>
+              <h2 className="text-3xl font-semibold text-white">
+                {userData?.name}
+              </h2>
+              <p className="text-sm text-white">@{userData?.username}</p>
             </div>
-            <Link href="/editProfile" legacyBehavior>
+            <Link href="/edit-profile" legacyBehavior>
               <a className="flex justify-center items-center text-white px-3 py-1 ml-2">
                 <SettingsIcon />
               </a>
@@ -121,13 +178,13 @@ const Profile = () => {
       </div>
       <div className="mx-2 my-4">
         <div className="bg-white rounded-t-lg">
-          <div className="p-4">
-            {/* Stats Bar */}
-            <div className="flex justify-around py-3 text-sm bg-white">
-              {" "}
-              {/* Made text bold */}
+          <div className="p-1 lg:p-4">
+            {/* <div className="flex justify-around py-3 text-sm bg-white">
               <span>
                 <span className="font-bold">5 </span>likes
+              </span>
+              <span>
+                <span className="font-bold">3 </span>friends
               </span>
               <span>
                 <span className="font-bold">35 </span>followers
@@ -135,18 +192,25 @@ const Profile = () => {
               <span>
                 <span className="font-bold">25 </span>following
               </span>
-            </div>
-            {/* Bio and Location */}
-            <div className="p-4 bg-white">
+            </div> */}
+            <div className="p-1 bg-white lg:p-4">
               <div className="mb-2 font-sans">
-                <span>This is headline</span>
+                <span>{userData?.headline}</span>
               </div>
               <div className="flex text-sm mb-2">
                 <span className="bg-gray-600 text-white py-1 px-2 rounded-lg mr-2">
-                  <MaleIcon className="text-blue-400" /> Man
+                  {userData?.gender == "male" && (
+                    <MaleIcon className="text-blue-400" />
+                  )}
+                  {userData?.gender == "female" && (
+                    <FemaleIcon className="text-blue-400" />
+                  )}
+                  {userData?.gender == "other" && (
+                    <TransgenderIcon className="text-blue-400" />
+                  )}
                 </span>
                 <span className="bg-gray-600 text-white py-1 px-2 rounded-lg mr-2">
-                  <LanguageIcon /> Ireland
+                  <LanguageIcon /> {userData?.country}
                 </span>
               </div>
 
