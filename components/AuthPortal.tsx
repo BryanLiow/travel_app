@@ -10,6 +10,10 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Button from "./Button";
 import Axios from "axios";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 import { TabProps } from "@mui/material/Tab";
 interface StyledTabProps extends TabProps {}
@@ -72,6 +76,8 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
   const [loginError, setLoginError] = useState("");
   const [registerError, setRegisterError] = useState("");
   const isPasswordMatch = password === confirmPassword;
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [userData, setUserData] = useState<UserData | null>(null);
 
   const handleChangeTab = (event: ChangeEvent<{}>, newValue: string) => {
     setPassword("");
@@ -94,7 +100,36 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
       const expiryTimestamp = new Date().getTime() + 60 * 60 * 1000;
 
       login({ username: user.username, token, expiry: expiryTimestamp });
+      const tokenData = localStorage.getItem("token");
+      if (tokenData) {
+        let parsedTokenData;
+        try {
+          parsedTokenData = JSON.parse(tokenData);
+        } catch (error) {
+          console.error("Error parsing token data:", error);
+          return;
+        }
 
+        const { token, expiry } = parsedTokenData;
+        if (expiry && Date.now() > expiry) {
+          console.error("Token expired");
+          // Handle expired token (e.g., redirect to login)
+          return;
+        }
+
+        Axios.get("http://127.0.0.1:8000/api/user", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((response) => {
+            setUserData(response.data);
+            sessionStorage.setItem("userData", JSON.stringify(response.data));
+          })
+          .catch((error) => {
+            console.error("There was an error!", error);
+          });
+      }
       onClose();
       setEmail("");
       setPassword("");
@@ -144,6 +179,11 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
     }
   };
 
+  // Function to toggle password visibility
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
+
   return (
     <>
       <Dialog
@@ -190,9 +230,28 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
               <TextField
                 margin="dense"
                 label="Password"
-                type="password"
+                type={passwordVisible ? "text" : "password"} // Use the passwordVisible state to toggle between "text" and "password"
                 fullWidth
                 onChange={(e) => setPassword(e.target.value)}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label={
+                          passwordVisible ? "Hide Password" : "Show Password"
+                        }
+                        onClick={togglePasswordVisibility}
+                        edge="end"
+                      >
+                        {passwordVisible ? (
+                          <VisibilityOffIcon />
+                        ) : (
+                          <VisibilityIcon />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
               {loginError && <div className="text-red-500">{loginError}</div>}
             </>
