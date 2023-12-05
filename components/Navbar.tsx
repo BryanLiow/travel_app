@@ -53,19 +53,19 @@ const Navbar = () => {
         <Link href="/" className="">
           <Image src="/logo.png" alt="logo" width={124} height={50} />
         </Link>
-        <div className="relative lg:flex items-center mx-2">
-          {/* <input
+        {/* <div className="relative lg:flex items-center mx-2">
+          <input
             type="search"
             placeholder="Search..."
             className="px-4 py-2 border border-gray-300 rounded-md"
-          /> */}
+          />
           <button
             type="submit"
             className="absolute right-2 top-2 text-gray-600"
           >
             <SearchIcon />
           </button>
-        </div>
+        </div> */}
         <ul className="hidden h-full gap-12 lg:flex">
           {NAV_LINKS.map((link) => {
             const isProfileLink = link.label === "Profile";
