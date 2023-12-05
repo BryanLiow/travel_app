@@ -21,6 +21,18 @@ interface Country {
   label: string;
   value: string;
 }
+interface UserData {
+  id: number;
+  name: string;
+  email: string;
+  username: string;
+  headline: string;
+  gender: string;
+  country: string;
+  email_verified_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
 
 const ProfileContainer = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -30,6 +42,7 @@ const ProfileContainer = styled(Box)(({ theme }) => ({
 }));
 
 const EditProfile = () => {
+  const [userData, setUserData] = useState<UserData | null>(null);
   const [country, setCountry] = useState<Country | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [countriesList, setCountriesList] = useState<Country[]>([]);
@@ -157,6 +170,18 @@ const EditProfile = () => {
         },
       })
         .then((response) => {
+          Axios.get("http://127.0.0.1:8000/api/user", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+            .then((response) => {
+              setUserData(response.data);
+              sessionStorage.setItem("userData", JSON.stringify(response.data));
+            })
+            .catch((error) => {
+              console.error("There was an error!", error);
+            });
           console.log("Profile updated successfully:", response.data);
           setSnackbarOpen(true);
         })

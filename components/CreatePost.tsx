@@ -8,15 +8,19 @@ import "react-image-crop/dist/ReactCrop.css";
 import { PixelCrop, Crop as BaseCrop } from "react-image-crop";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
-import Button from "./Button";
+import { Snackbar, IconButton } from "@mui/material";
 import Axios from "axios";
 import { countries } from "countries-list";
+import CloseIcon from "@mui/icons-material/Close";
+import { useRouter } from "next/navigation";
+
 interface Country {
   label: string;
   value: string;
 }
 
 const CreatePost: React.FC = () => {
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const sliderRef = useRef<Slider>(null);
   const [key, setKey] = useState(0); // Add a key state
   const [postTitle, setPostTitle] = useState<string>("");
@@ -33,13 +37,30 @@ const CreatePost: React.FC = () => {
   const [titleError, setTitleError] = useState("");
   const [photoError, setPhotoError] = useState("");
   const [captionError, setCaptionError] = useState("");
-  const findCountryObject = (countryName: string) => {
-    return (
-      countriesList.find(
-        (country) => country.label.toLowerCase() === countryName.toLowerCase()
-      ) || null
-    );
+  const router = useRouter();
+
+  const handleCloseSnackbar = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbarOpen(false);
   };
+
+  const action = (
+    <React.Fragment>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleCloseSnackbar}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </React.Fragment>
+  );
 
   useEffect(() => {
     const countryData: Country[] = Object.values(countries).map((country) => ({
@@ -105,7 +126,6 @@ const CreatePost: React.FC = () => {
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
-    console.log("handleSubmit called");
     event.preventDefault();
     // Reset error messages
     setTitleError("");
@@ -157,34 +177,36 @@ const CreatePost: React.FC = () => {
     // Create FormData instance to handle file uploads
     const formData = new FormData();
     formData.append("title", postTitle);
-    formData.append("description", postDescription);
+    formData.append("caption", postDescription); // Changed from 'description' to 'caption'
     formData.append("country", country?.label || "");
-    formData.append("tags", tags);
-    formData.append("mentions", mentions);
-    formData.append("isPrivate", isPrivate.toString());
+    // Append other necessary fields if they are part of the API
+    // formData.append("tags", tags.join(',')); // Assuming tags is an array of strings
+    // formData.append("mentions", mentions.join(',')); // Assuming mentions is an array of strings
+    // formData.append("isPrivate", isPrivate.toString());
 
     // Convert Blob URLs to File objects and append them to FormData
     for (const preview of imagePreviews) {
       try {
         const response = await fetch(preview);
         const blob = await response.blob();
-        // If filename is undefined, use a default name
         const filename = preview.split("/").pop() ?? "image.jpg";
         const file = new File([blob], filename, { type: "image/jpeg" });
-        formData.append("images[]", file);
+        formData.append("postPhoto[]", file); // Changed from 'images[]' to 'postPhoto[]' to match server expectations
       } catch (error) {
         console.error("Error processing image:", error);
       }
     }
 
-    Axios.post("http://127.0.0.1:8000/api/posts", formData, {
+    Axios.post("http://127.0.0.1:8000/api/createnewpost", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
       },
     })
       .then((response) => {
+        setSnackbarOpen(true);
         console.log("Post created successfully:", response.data);
+        router.push("/profile");
       })
       .catch((error) => {
         console.error("Error creating post:", error);
@@ -243,6 +265,14 @@ const CreatePost: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className="p-4 space-y-4">
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        message="Posted!"
+        action={action}
+      />
       <div className="flex flex-row justify-center h-44 mb-4">
         {imagePreviews.length === 0 ? (
           // Render this when there are 0 photos in preview
