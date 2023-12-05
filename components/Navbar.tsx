@@ -45,6 +45,7 @@ const Navbar = () => {
   const handleLogout = () => {
     // Call the logout function when the logout button is clicked
     logout();
+    router.push("/")
   };
 
   return (

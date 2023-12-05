@@ -22,7 +22,6 @@ interface AuthContextType {
   toggleAuthDialog: () => void;
 }
 
-
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const TOKEN_VALIDITY_PERIOD = 7 * 24 * 60 * 60 * 1000; // 1 week in milliseconds
@@ -60,7 +59,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const logout = () => {
     setUser({ username: "", token: null, expiry: null });
     localStorage.removeItem("token");
-    setAuthDialogOpen(false); // Close the auth dialog on logout
+    setAuthDialogOpen(false);
   };
 
   useEffect(() => {
