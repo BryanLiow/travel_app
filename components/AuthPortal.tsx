@@ -14,6 +14,8 @@ import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { Snackbar } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 import { TabProps } from "@mui/material/Tab";
 interface StyledTabProps extends TabProps {}
@@ -54,6 +56,19 @@ const AuthTabs = {
   Register: "register",
 };
 
+interface UserData {
+  id: number;
+  name: string;
+  email: string;
+  username: string;
+  headline: string;
+  gender: string;
+  country: string;
+  email_verified_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 type AuthPortalProps = {
   open: boolean;
   onClose: () => void;
@@ -78,7 +93,30 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
   const isPasswordMatch = password === confirmPassword;
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
+  const handleCloseSnackbar = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
+  const action = (
+    <React.Fragment>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleCloseSnackbar}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </React.Fragment>
+  );
   const handleChangeTab = (event: ChangeEvent<{}>, newValue: string) => {
     setPassword("");
     setConfirmPassword("");
@@ -87,8 +125,7 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
     onChangeActiveTab(newValue);
   };
 
-  // Function to handle login
-  const handleLogin = async () => {
+  const handleLogin = async (registered: boolean) => {
     try {
       const response = await Axios.post("http://127.0.0.1:8000/api/login", {
         email,
@@ -96,6 +133,11 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
       });
       // Handle success response
       console.log(response.data);
+      if (!registered) {
+        setSnackbarMessage("Login successfully!");
+        setSnackbarOpen(true);
+      }
+
       const { token, user } = response.data;
       const expiryTimestamp = new Date().getTime() + 60 * 60 * 1000;
 
@@ -158,7 +200,10 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
         password: password,
         password_confirmation: confirmPassword,
       });
-      handleLogin();
+      setSnackbarMessage("Register successfully!"); // You can customize this message
+      setSnackbarOpen(true);
+
+      handleLogin(true);
       // Handle success response
       console.log(response.data);
       onClose(); // Close the dialog after successful registration
@@ -186,6 +231,14 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
 
   return (
     <>
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        message={snackbarMessage}
+        action={action}
+      />
       <Dialog
         open={open}
         onClose={onClose}
@@ -316,7 +369,7 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
             variant="btn_login"
             onClick={() => {
               if (activeTab === AuthTabs.Login) {
-                handleLogin();
+                handleLogin(false);
               } else {
                 handleRegister();
               }
