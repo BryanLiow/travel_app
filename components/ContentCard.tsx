@@ -1,3 +1,4 @@
+"use client";
 import * as React from "react";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
@@ -6,9 +7,13 @@ import CardActions from "@mui/material/CardActions";
 import Typography from "@mui/material/Typography";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import Link from "next/link";
+import usePost from "./contexts/PostContext";
+import { useRouter } from "next/navigation";
 
 type ContentCardProps = {
   randomHeight: string;
+  postId: number;
   contentCardTitle: string;
   thumbnail: string;
   likes: number;
@@ -19,6 +24,7 @@ type ContentCardProps = {
 
 const ContentCard = ({
   randomHeight,
+  postId,
   contentCardTitle,
   thumbnail,
   likes,
@@ -26,8 +32,24 @@ const ContentCard = ({
   location,
   createdOn,
 }: ContentCardProps) => {
+  const { setPost } = usePost();
+  const router = useRouter();
+
+  const handleCardClick = () => {
+    setPost({
+      postId,
+      contentCardTitle,
+      likes,
+      user,
+      location,
+      createdOn,
+      imageUrl: thumbnail,
+    });
+    router.push("/post-detail");
+  };
+
   return (
-    <div>
+    <a onClick={handleCardClick} className="hover:cursor-pointer">
       <Card
         className="rounded-xl border-solid border-1 border-gray-900"
         sx={{ maxWidth: 350 }}
@@ -65,7 +87,7 @@ const ContentCard = ({
           </div>
         </CardActions>
       </Card>
-    </div>
+    </a>
   );
 };
 

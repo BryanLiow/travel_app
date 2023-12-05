@@ -96,6 +96,7 @@ export const NAV_LINKS = [
       contentCardTitle: 'This is title',
       thumbnail: 'https://picsum.photos/id/1/245/400',
       likes: 12345,
+      postId: 1,
       user: 'Bliowww',
       location: 'Malaysia',
       createdOn: '1 Week Ago'
@@ -104,6 +105,7 @@ export const NAV_LINKS = [
       contentCardTitle: 'This is title',
       thumbnail: 'https://picsum.photos/id/32/245/400',
       likes: 12345,
+      postId: 2,
       user: 'Bliowww',
       location: 'Malaysia',
       createdOn: '1 Week Ago'
@@ -112,6 +114,7 @@ export const NAV_LINKS = [
       contentCardTitle: 'This is title',
       thumbnail: 'https://picsum.photos/id/43/245/400',
       likes: 12345,
+      postId: 3,
       user: 'Bliowww',
       location: 'Malaysia',
       createdOn: '1 Week Ago'
@@ -120,6 +123,7 @@ export const NAV_LINKS = [
       contentCardTitle: 'This is title',
       thumbnail: 'https://picsum.photos/id/54/245/400',
       likes: 12345,
+      postId: 4,
       user: 'Bliowww',
       location: 'Malaysia',
       createdOn: '1 Week Ago'
@@ -128,6 +132,7 @@ export const NAV_LINKS = [
       contentCardTitle: 'This is title',
       thumbnail: 'https://picsum.photos/id/65/245/400',
       likes: 12345,
+      postId: 5,
       user: 'Bliowww',
       location: 'Malaysia',
       createdOn: '1 Week Ago'
@@ -136,6 +141,7 @@ export const NAV_LINKS = [
       contentCardTitle: 'This is title',
       thumbnail: 'https://picsum.photos/id/76/245/400',
       likes: 12345,
+      postId: 6,
       user: 'Bliowww',
       location: 'Malaysia',
       createdOn: '1 Week Ago'
@@ -144,6 +150,7 @@ export const NAV_LINKS = [
       contentCardTitle: 'This is title',
       thumbnail: 'https://picsum.photos/id/87/245/400',
       likes: 12345,
+      postId: 7,
       user: 'Bliowww',
       location: 'Malaysia',
       createdOn: '1 Week Ago'
@@ -152,6 +159,7 @@ export const NAV_LINKS = [
       contentCardTitle: 'This is title',
       thumbnail: 'https://picsum.photos/id/98/245/400',
       likes: 12345,
+      postId: 8,
       user: 'Bliowww',
       location: 'Malaysia',
       createdOn: '1 Week Ago'
@@ -160,6 +168,7 @@ export const NAV_LINKS = [
       contentCardTitle: 'This is title',
       thumbnail: 'https://picsum.photos/id/49/245/400',
       likes: 12345,
+      postId: 9,
       user: 'Bliowww',
       location: 'Malaysia',
       createdOn: '1 Week Ago'
@@ -168,6 +177,7 @@ export const NAV_LINKS = [
       contentCardTitle: 'This is title',
       thumbnail: 'https://picsum.photos/id/101/245/400',
       likes: 12345,
+      postId: 10,
       user: 'Bliowww',
       location: 'Malaysia',
       createdOn: '1 Week Ago'
@@ -176,6 +186,7 @@ export const NAV_LINKS = [
       contentCardTitle: 'This is title',
       thumbnail: 'https://picsum.photos/id/111/245/400',
       likes: 12345,
+      postId: 11,
       user: 'Bliowww',
       location: 'Malaysia',
       createdOn: '1 Week Ago'
@@ -184,6 +195,7 @@ export const NAV_LINKS = [
       contentCardTitle: 'This is title',
       thumbnail: 'https://picsum.photos/id/121/245/400',
       likes: 12345,
+      postId: 12,
       user: 'Bliowww',
       location: 'Malaysia',
       createdOn: '1 Week Ago'
@@ -192,6 +204,7 @@ export const NAV_LINKS = [
       contentCardTitle: 'This is title',
       thumbnail: 'https://picsum.photos/id/213/245/400',
       likes: 12345,
+      postId: 13,
       user: 'Bliowww',
       location: 'Malaysia',
       createdOn: '1 Week Ago'
@@ -200,6 +213,7 @@ export const NAV_LINKS = [
       contentCardTitle: 'This is title',
       thumbnail: 'https://picsum.photos/id/143/245/400',
       likes: 12345,
+      postId: 14,
       user: 'Bliowww',
       location: 'Malaysia',
       createdOn: '1 Week Ago'
@@ -208,6 +222,7 @@ export const NAV_LINKS = [
       contentCardTitle: 'This is title',
       thumbnail: 'https://picsum.photos/id/315/245/400',
       likes: 12345,
+      postId: 15,
       user: 'Bliowww',
       location: 'Malaysia',
       createdOn: '1 Week Ago'
@@ -216,6 +231,7 @@ export const NAV_LINKS = [
       contentCardTitle: 'This is title',
       thumbnail: 'https://picsum.photos/id/416/245/400',
       likes: 12345,
+      postId: 16,
       user: 'Bliowww',
       location: 'Malaysia',
       createdOn: '1 Week Ago'
@@ -224,6 +240,7 @@ export const NAV_LINKS = [
       contentCardTitle: 'This is title',
       thumbnail: 'https://picsum.photos/id/174/245/400',
       likes: 12345,
+      postId: 17,
       user: 'Bliowww',
       location: 'Malaysia',
       createdOn: '1 Week Ago'
@@ -232,6 +249,7 @@ export const NAV_LINKS = [
       contentCardTitle: 'This is title',
       thumbnail: 'https://picsum.photos/id/185/245/400',
       likes: 12345,
+      postId: 18,
       user: 'Bliowww',
       location: 'Malaysia',
       createdOn: '1 Week Ago'
@@ -240,6 +258,7 @@ export const NAV_LINKS = [
       contentCardTitle: 'This is title',
       thumbnail: 'https://picsum.photos/id/519/245/400',
       likes: 12345,
+      postId: 19,
       user: 'Bliowww',
       location: 'Malaysia',
       createdOn: '1 Week Ago'
@@ -248,6 +267,7 @@ export const NAV_LINKS = [
       contentCardTitle: 'This is title',
       thumbnail: 'https://picsum.photos/id/620/245/400',
       likes: 12345,
+      postId: 20,
       user: 'Bliowww',
       location: 'Malaysia',
       createdOn: '1 Week Ago'

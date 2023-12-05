@@ -1,6 +1,6 @@
 "use client";
-import React, { useState, ChangeEvent } from "react";
-import { useAuth } from "./cotexts/AuthContext";
+import React, { useState } from "react";
+import { useAuth } from "./contexts/AuthContext";
 import { usePathname, useRouter } from "next/navigation";
 import { NAV_LINKS } from "@/constants";
 import Image from "next/image";

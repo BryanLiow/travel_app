@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent } from "react";
-import { useAuth } from "./cotexts/AuthContext";
+import { useAuth } from "./contexts/AuthContext";
 import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
