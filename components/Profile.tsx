@@ -37,7 +37,7 @@ const Profile = () => {
 
   const tabs = {
     work: <GridOnIcon />,
-    favourite: <GradeIcon />,
+    // favourite: <GradeIcon />,
   };
 
   useEffect(() => {
@@ -121,28 +121,28 @@ const Profile = () => {
             </div>
           </div>
         );
-      case "favourite":
-        return (
-          <div className="p-4">
-            <div className="grid grid-cols-2 gap-1 lg:grid-cols-5">
-              {HOME_CONTENT_CARD.map((contentCard, index) => (
-                <div>
-                  <ContentCard
-                    key={index}
-                    randomHeight="false"
-                    postId={contentCard.postId}
-                    contentCardTitle={contentCard.contentCardTitle}
-                    thumbnail={contentCard.thumbnail}
-                    likes={contentCard.likes}
-                    user={contentCard.user}
-                    location={contentCard.location}
-                    createdOn={contentCard.createdOn}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        );
+      // case "favourite":
+      //   return (
+      //     <div className="p-4">
+      //       <div className="grid grid-cols-2 gap-1 lg:grid-cols-5">
+      //         {HOME_CONTENT_CARD.map((contentCard, index) => (
+      //           <div>
+      //             <ContentCard
+      //               key={index}
+      //               randomHeight="false"
+      //               postId={contentCard.postId}
+      //               contentCardTitle={contentCard.contentCardTitle}
+      //               thumbnail={contentCard.thumbnail}
+      //               likes={contentCard.likes}
+      //               user={contentCard.user}
+      //               location={contentCard.location}
+      //               createdOn={contentCard.createdOn}
+      //             />
+      //           </div>
+      //         ))}
+      //       </div>
+      //     </div>
+      //   );
     }
   };
 

@@ -1,15 +1,16 @@
 "use client"
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useContext, useCallback } from "react";
 
 type PostData = {
-  postId: number; 
+  postId: number;
   contentCardTitle: string;
   likes: number;
-  user: string;
+  userId: number;
   location: string;
   createdOn: string;
-  imageUrl?: string; // imageUrl is now optional
-  isLiked?: boolean; 
+  username: string;
+  imageUrl?: string;
+  isLiked?: boolean;
 };
 
 // Define the context type
@@ -36,7 +37,13 @@ type PostProviderProps = {
 };
 
 export const PostProvider = ({ children }: PostProviderProps) => {
-  const [post, setPost] = useState<PostData | null>(null);
+  const [post, setPostInternal] = useState<PostData | null>(null);
+
+  // Define a callback for setting the post and saving it to session storage
+  const setPost = useCallback((newPost: PostData) => {
+    setPostInternal(newPost);
+    sessionStorage.setItem("currentPost", JSON.stringify(newPost));
+  }, []);
 
   return (
     <PostContext.Provider value={{ post, setPost }}>

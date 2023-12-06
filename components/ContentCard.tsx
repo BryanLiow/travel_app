@@ -8,11 +8,9 @@ import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import Typography from "@mui/material/Typography";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import usePost from "./contexts/PostContext";
 import { useRouter } from "next/navigation";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 type ContentCardProps = {
   randomHeight: string;
@@ -20,8 +18,9 @@ type ContentCardProps = {
   contentCardTitle: string;
   thumbnail: string;
   likes: number;
-  user: string;
+  userId: number;
   location: string;
+  username: string;
   createdOn: string;
 };
 
@@ -31,8 +30,9 @@ const ContentCard = ({
   contentCardTitle,
   thumbnail,
   likes,
-  user,
+  userId,
   location,
+  username,
   createdOn,
 }: ContentCardProps) => {
   const { setPost } = usePost();
@@ -43,9 +43,10 @@ const ContentCard = ({
       postId,
       contentCardTitle,
       likes,
-      user,
+      userId,
       location,
       createdOn,
+      username,
       imageUrl: thumbnail,
     });
     router.push("/post-detail");
@@ -59,8 +60,12 @@ const ContentCard = ({
       >
         {randomHeight == "true" && (
           <CardHeader
-            avatar={<Avatar aria-label="recipe">R</Avatar>}
-            title="user name"
+            avatar={
+              <Avatar aria-label="recipe">
+                {username.charAt(0).toUpperCase()}
+              </Avatar>
+            }
+            title={username}
             subheader={
               <div className="text-xs text-gray-300">
                 <span>{location}</span>
@@ -85,7 +90,7 @@ const ContentCard = ({
         <CardActions>
           <div className="grid grid-cols-2 w-full">
             <div className="text-xs">
-              <FavoriteIcon />
+              <FavoriteBorderIcon />
               <span className="text-xs">{likes}</span>
             </div>
             <div className="text-xs text-right pt-1">
