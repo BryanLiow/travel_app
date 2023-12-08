@@ -10,7 +10,9 @@ import DoneIcon from "@mui/icons-material/Done";
 import { formatDistanceToNow } from "date-fns";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useRouter } from "next/navigation";
-
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 interface PostData {
   postId: number;
   contentCardTitle: string;
@@ -42,6 +44,25 @@ const PostDetail: React.FC = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState<string>("");
+  const [imagePaths, setImagePaths] = useState<string[]>([]); // State to store image paths
+
+  const sliderSettings = {
+    dots: true,
+    infinite: false,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    arrows: true,
+    customPaging: function (i: number) {
+      return (
+        <a>
+          <div className="dot" data-index={i}></div>
+        </a>
+      );
+    },
+
+    dotsClass: "slick-dots custom-dots",
+  };
 
   const fetchPostDetails = async (postId: number) => {
     try {
@@ -62,6 +83,7 @@ const PostDetail: React.FC = () => {
         ...prev,
         ...response.data,
       }));
+      setImagePaths(response.data.imagePaths); // Set the image paths from the response
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
@@ -314,15 +336,24 @@ const PostDetail: React.FC = () => {
           </button>
         </div>
 
-        {imageUrl && (
-          <img
-            src={imageUrl}
-            alt={`Post by ${contentCardTitle}`}
-            className="post-image w-full rounded-t-lg"
-          />
-        )}
+        {imagePaths.length > 0 &&
+          (imagePaths.length === 1 ? (
+            <img src={imagePaths[0]} alt="Post" className="post-image w-full" />
+          ) : (
+            <Slider {...sliderSettings}>
+              {imagePaths.map((path, index) => (
+                <div key={index}>
+                  <img
+                    src={path}
+                    alt={`Post Image ${index}`}
+                    className="post-image w-full"
+                  />
+                </div>
+              ))}
+            </Slider>
+          ))}
 
-        <div className="post-interactions flex justify-between items-center p-4">
+        <div className="post-interactions flex justify-between items-center p-4 pt-9">
           <div className="left-interactions flex items-center">
             <IconButton onClick={handleToggleLike} className="like-button">
               {localPost.isLiked ? (
