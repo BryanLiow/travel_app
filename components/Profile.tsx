@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import Card from "@mui/material/Card";
 import ContentCard from "./ContentCard";
 import LanguageIcon from "@mui/icons-material/Language";
@@ -29,6 +29,7 @@ interface UserData {
 
 const Profile = () => {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const userIdFromUrl = searchParams.get("userId");
   const [activeTab, setActiveTab] = useState("work");
@@ -196,6 +197,7 @@ const Profile = () => {
                     userId={contentCard.user_id}
                     location={contentCard.country}
                     username={contentCard.username}
+                    pathname={pathname}
                     createdOn={formatDistanceToNow(
                       new Date(contentCard.createdOn),
                       {

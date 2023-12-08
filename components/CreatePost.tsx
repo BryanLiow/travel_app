@@ -22,7 +22,7 @@ interface Country {
 const CreatePost: React.FC = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const sliderRef = useRef<Slider>(null);
-  const [key, setKey] = useState(0); // Add a key state
+  const [key, setKey] = useState(0);
   const [postTitle, setPostTitle] = useState<string>("");
   const [postDescription, setPostDescription] = useState<string>("");
   const [countriesList, setCountriesList] = useState<Country[]>([]);
@@ -38,6 +38,7 @@ const CreatePost: React.FC = () => {
   const [photoError, setPhotoError] = useState("");
   const [captionError, setCaptionError] = useState("");
   const router = useRouter();
+  const [isPosting, setIsPosting] = useState(false);
 
   const handleCloseSnackbar = (
     event?: React.SyntheticEvent | Event,
@@ -127,6 +128,8 @@ const CreatePost: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setIsPosting(true); // Set isPosting to true to disable the button and show loading indicator
+
     // Reset error messages
     setTitleError("");
     setPhotoError("");
@@ -147,6 +150,11 @@ const CreatePost: React.FC = () => {
     if (!postDescription.trim()) {
       setCaptionError("Please write a caption for the post.");
       isValid = false;
+    }
+
+    if (!isValid) {
+      setIsPosting(false); // Reset isPosting if the form is not valid
+      return;
     }
 
     if (!isValid) return;
@@ -209,6 +217,9 @@ const CreatePost: React.FC = () => {
       })
       .catch((error) => {
         console.error("Error creating post:", error);
+      })
+      .finally(() => {
+        setIsPosting(false); // Reset isPosting after the post request completes
       });
   };
 
@@ -388,8 +399,9 @@ const CreatePost: React.FC = () => {
         <button
           type="submit"
           className="btn_login !py-2 !px-5 flexCenter gap-8 rounded-full border hover:cursor-pointer"
+          disabled={isPosting}
         >
-          Share Post
+          {isPosting ? "Posting..." : "Share Post"}{" "}
         </button>
       </div>
     </form>

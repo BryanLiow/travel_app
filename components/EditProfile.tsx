@@ -16,7 +16,8 @@ import Axios from "axios";
 import Button from "./Button";
 import { Snackbar, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useRouter } from "next/navigation";
 interface Country {
   label: string;
   value: string;
@@ -42,6 +43,7 @@ const ProfileContainer = styled(Box)(({ theme }) => ({
 }));
 
 const EditProfile = () => {
+  const router = useRouter();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [country, setCountry] = useState<Country | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -135,6 +137,10 @@ const EditProfile = () => {
     setCountry(value);
   };
 
+  const handleBack = () => {
+    router.push("/profile");
+  };
+
   const handleUpdateProfile = () => {
     const tokenData = localStorage.getItem("token");
 
@@ -192,9 +198,12 @@ const EditProfile = () => {
 
   return (
     <ProfileContainer>
+      <div onClick={() => handleBack()} className="hover:cursor-pointer">
+        <ArrowBackIcon />
+      </div>
       <div
         className="relative bg-cover bg-center p-4 h-50"
-        style={{ backgroundImage: "url('/path-to-timeline-image.jpg')" }}
+        // style={{ backgroundImage: "url('/path-to-timeline-image.jpg')" }}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-gray-50 via-gray-90 to-black opacity-80"></div>
         <div className="flex justify-center items-center space-x-4 pl-4 h-full">

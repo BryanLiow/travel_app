@@ -24,6 +24,7 @@ type ContentCardProps = {
   username: string;
   createdOn: string;
   isLiked: boolean;
+  pathname: string;
 };
 
 const ContentCard = ({
@@ -37,10 +38,10 @@ const ContentCard = ({
   username,
   createdOn,
   isLiked,
+  pathname,
 }: ContentCardProps) => {
   const { setPost } = usePost();
   const router = useRouter();
-
   const handleCardClick = () => {
     setPost({
       postId,
@@ -51,6 +52,7 @@ const ContentCard = ({
       createdOn,
       username,
       imageUrl: thumbnail,
+      pathname,
     });
     router.push("/post-detail");
   };

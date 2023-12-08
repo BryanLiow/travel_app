@@ -11,6 +11,7 @@ type PostData = {
   username: string;
   imageUrl?: string | null;
   isLiked?: boolean;
+  pathname: string;
 };
 
 // Define the context type

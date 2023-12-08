@@ -3,6 +3,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import Axios from "axios";
 import ContentCard from "./ContentCard";
 import { formatDistanceToNow } from "date-fns";
+import { usePathname } from "next/navigation";
+
 
 interface Post {
   id: number;
@@ -29,6 +31,7 @@ const Home = () => {
   const [loadedPostIds, setLoadedPostIds] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [allDataLoaded, setAllDataLoaded] = useState(false);
+  const pathname = usePathname()
 
   const fetchPosts = async () => {
     if (isLoading || allDataLoaded) return;
@@ -121,6 +124,7 @@ const Home = () => {
                     username={contentCard.username}
                     createdOn={contentCard.createdOn}
                     isLiked={contentCard.isLiked}
+                    pathname={pathname}
                   />
                 </div>
               ))}

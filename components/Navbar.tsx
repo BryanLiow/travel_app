@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "./contexts/AuthContext";
 import { usePathname, useRouter } from "next/navigation";
 import { NAV_LINKS } from "@/constants";
@@ -22,6 +22,11 @@ const Navbar = () => {
   const currentRoute = usePathname();
   const { user, logout, authDialogOpen, toggleAuthDialog } = useAuth();
   const [authTab, setAuthTab] = useState(AuthTabs.Login);
+  const [isInitiallyLoaded, setIsInitiallyLoaded] = useState(false); // New state for initial load
+
+  useEffect(() => {
+    setIsInitiallyLoaded(true);
+  }, []);
 
   const handleAuthDialogToggle = () => {
     if (!authDialogOpen) {
@@ -141,7 +146,7 @@ const Navbar = () => {
       <div
         className={`fixed top-0 right-0 w-64 h-full bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
           isSidebarOpen ? "translate-x-0" : "translate-x-full"
-        } z-40 lg:hidden`}
+        } z-40 lg:hidden ${!isInitiallyLoaded ? "hidden" : ""}`}
       >
         <button
           onClick={toggleSidebar}

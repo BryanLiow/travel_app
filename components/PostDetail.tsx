@@ -8,6 +8,8 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import DoneIcon from "@mui/icons-material/Done";
 import { formatDistanceToNow } from "date-fns";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useRouter } from "next/navigation";
 
 interface PostData {
   postId: number;
@@ -20,6 +22,7 @@ interface PostData {
   imageUrl?: string;
   isLiked?: boolean;
   isFollowing?: boolean;
+  pathname: string;
 }
 interface Comment {
   id: number;
@@ -32,6 +35,7 @@ interface Comment {
 
 const PostDetail: React.FC = () => {
   const { post } = usePost();
+  const router = useRouter();
   const [localPost, setLocalPost] = useState<PostData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -152,6 +156,10 @@ const PostDetail: React.FC = () => {
     setOpenDialog(false);
   };
 
+  const handleBack = () => {
+    router.push(pathname);
+  };
+
   const handleFollow = async (isCurrentlyFollowing: boolean) => {
     const tokenData = localStorage.getItem("token");
 
@@ -267,135 +275,139 @@ const PostDetail: React.FC = () => {
     imageUrl,
     isLiked,
     isFollowing,
+    pathname,
   } = localPost;
 
   return (
     <div className="bg-gradient-to-r from-black from-30% via-green-950 via-50% to-black to-90% text-gray-800 min-h-screen py-4">
-    <div className="bg-white rounded-lg max-w-lg mx-auto my-4 overflow-hidden shadow-lg">
-      <div className="post-header flex items-center justify-between p-4 border-b">
-        {/* <Avatar
+      <div className="bg-white rounded-lg max-w-lg mx-auto my-4 overflow-hidden shadow-lg">
+        <div className="post-header flex items-center justify-between p-4 border-b">
+          <div onClick={() => handleBack()} className="hover:cursor-pointer">
+            <ArrowBackIcon />
+          </div>
+          {/* <Avatar
           src="/path/to/user/profile_pic.jpg"
           alt="User Profile"
           className="mr-2"
         /> */}
-        <div className="avatar-placeholder mr-3 w-10 h-10 bg-gray-300 rounded-full flex justify-center items-center">
-          <span className="text-lg font-medium text-gray-600">
-            {username.charAt(0).toUpperCase()}
-          </span>
-        </div>
-
-        <div className="flex-grow">
-          <h2 className="font-semibold">{contentCardTitle}</h2>
-          <span className="text-sm text-gray-500">{location}</span>
-        </div>
-        <button
-          className="btn_login !py-2 !px-5 flexCenter gap-8 rounded-full border hover:cursor-pointer"
-          onClick={() => handleFollow(localPost?.isFollowing ?? false)}
-        >
-          {localPost?.isFollowing ? (
-            <span>
-              Following <DoneIcon sx={{ fontSize: 20 }} />
+          <div className="avatar-placeholder ml-2 mr-3 w-10 h-10 bg-gray-300 rounded-full flex justify-center items-center">
+            <span className="text-lg font-medium text-gray-600">
+              {username.charAt(0).toUpperCase()}
             </span>
-          ) : (
-            "Follow"
-          )}
-        </button>
-      </div>
+          </div>
 
-      {imageUrl && (
-        <img
-          src={imageUrl}
-          alt={`Post by ${contentCardTitle}`}
-          className="post-image w-full rounded-t-lg"
-        />
-      )}
-
-      <div className="post-interactions flex justify-between items-center p-4">
-        <div className="left-interactions flex items-center">
-          <IconButton onClick={handleToggleLike} className="like-button">
-            {localPost.isLiked ? (
-              <FavoriteIcon color="error" />
+          <div className="flex-grow">
+            <h2 className="font-semibold">{contentCardTitle}</h2>
+            <span className="text-sm text-gray-500">{location}</span>
+          </div>
+          <button
+            className="btn_login !py-2 !px-5 flexCenter gap-8 rounded-full border hover:cursor-pointer"
+            onClick={() => handleFollow(localPost?.isFollowing ?? false)}
+          >
+            {localPost?.isFollowing ? (
+              <span>
+                Following <DoneIcon sx={{ fontSize: 20 }} />
+              </span>
             ) : (
-              <FavoriteBorderIcon sx={{ fontSize: 20 }} />
+              "Follow"
             )}
-          </IconButton>
-          <span className="likes-count text-sm">{likesCount}</span>
-          <IconButton onClick={handleCommentClick} className="comment-button">
-            <ChatBubbleOutlineIcon sx={{ fontSize: 20 }} />
-          </IconButton>
+          </button>
         </div>
-        {/* <IconButton className="save-button">
+
+        {imageUrl && (
+          <img
+            src={imageUrl}
+            alt={`Post by ${contentCardTitle}`}
+            className="post-image w-full rounded-t-lg"
+          />
+        )}
+
+        <div className="post-interactions flex justify-between items-center p-4">
+          <div className="left-interactions flex items-center">
+            <IconButton onClick={handleToggleLike} className="like-button">
+              {localPost.isLiked ? (
+                <FavoriteIcon color="error" />
+              ) : (
+                <FavoriteBorderIcon sx={{ fontSize: 20 }} />
+              )}
+            </IconButton>
+            <span className="likes-count text-sm">{likesCount}</span>
+            <IconButton onClick={handleCommentClick} className="comment-button">
+              <ChatBubbleOutlineIcon sx={{ fontSize: 20 }} />
+            </IconButton>
+          </div>
+          {/* <IconButton className="save-button">
           <BookmarkBorder Icon sx={{ fontSize: 20 }}  />
         </IconButton> */}
-      </div>
+        </div>
 
-      <div className="post-footer p-4">
-        <span className="post-date text-xs text-gray-500">{createdOn}</span>
-      </div>
-      <Dialog
-        open={openDialog}
-        onClose={handleCloseDialog}
-        aria-labelledby="comment-dialog-title"
-      >
-        <DialogTitle id="comment-dialog-title">Comments</DialogTitle>
-        <DialogContent>
-          <div className="post-comments mt-4 bg-gray-100 p-4">
-            <div className="new-comment mb-4 flex flex-col sm:flex-row items-center">
-              {/* Profile picture placeholder */}
-              <div className="profile-pic mb-3 sm:mb-0 sm:mr-3 w-10 h-10 bg-gray-300 rounded-full flex justify-center items-center">
-                {/* Replace with actual profile picture if available */}
-                <span className="text-lg font-medium text-gray-600">
-                  {username.charAt(0).toUpperCase()}
-                </span>
+        <div className="post-footer p-4">
+          <span className="post-date text-xs text-gray-500">{createdOn}</span>
+        </div>
+        <Dialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          aria-labelledby="comment-dialog-title"
+        >
+          <DialogTitle id="comment-dialog-title">Comments</DialogTitle>
+          <DialogContent>
+            <div className="post-comments mt-4 bg-gray-100 p-4">
+              <div className="new-comment mb-4 flex flex-col sm:flex-row items-center">
+                {/* Profile picture placeholder */}
+                <div className="profile-pic mb-3 sm:mb-0 sm:mr-3 w-10 h-10 bg-gray-300 rounded-full flex justify-center items-center">
+                  {/* Replace with actual profile picture if available */}
+                  <span className="text-lg font-medium text-gray-600">
+                    {username.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Write a comment..."
+                  className="w-full sm:w-auto flex-grow border border-gray-300 rounded-lg p-2 text-sm text-gray-700 mb-3 sm:mb-0 sm:mr-3"
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                />
+                <button
+                  className="w-full sm:w-auto btn_login !py-2 !px-5 flexCenter gap-8 rounded-full border hover:cursor-pointer"
+                  onClick={handlePostComment}
+                >
+                  Comment
+                </button>
               </div>
-              <input
-                type="text"
-                placeholder="Write a comment..."
-                className="w-full sm:w-auto flex-grow border border-gray-300 rounded-lg p-2 text-sm text-gray-700 mb-3 sm:mb-0 sm:mr-3"
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-              />
-              <button
-                className="w-full sm:w-auto btn_login !py-2 !px-5 flexCenter gap-8 rounded-full border hover:cursor-pointer"
-                onClick={handlePostComment}
-              >
-                Comment
-              </button>
+              <h3 className="comments-title text-lg font-semibold mb-4 text-gray-900">
+                Comments
+              </h3>
+              {comments.map((comment) => (
+                <div
+                  key={comment.id}
+                  className="comment mb-3 p-4 rounded-lg shadow-sm bg-white border-t border-gray-200"
+                >
+                  <div className="comment-header flex items-center mb-2">
+                    <div className="avatar mr-3 w-10 h-10 bg-gray-300 rounded-full flex justify-center items-center">
+                      <span className="text-lg font-medium text-gray-600">
+                        {comment.username.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                    <div className="comment-body flex-grow">
+                      <span className="comment-author font-medium text-sm text-gray-900">
+                        {comment.username}
+                      </span>
+                      <span className="comment-text block text-xs text-gray-500 mt-1">
+                        {comment.comment}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="comment-timestamp text-xs text-gray-500">
+                    {formatDistanceToNow(new Date(comment.created), {
+                      addSuffix: true,
+                    })}
+                  </div>
+                </div>
+              ))}
             </div>
-            <h3 className="comments-title text-lg font-semibold mb-4 text-gray-900">
-              Comments
-            </h3>
-            {comments.map((comment) => (
-              <div
-                key={comment.id}
-                className="comment mb-3 p-4 rounded-lg shadow-sm bg-white border-t border-gray-200"
-              >
-                <div className="comment-header flex items-center mb-2">
-                  <div className="avatar mr-3 w-10 h-10 bg-gray-300 rounded-full flex justify-center items-center">
-                    <span className="text-lg font-medium text-gray-600">
-                      {comment.username.charAt(0).toUpperCase()}
-                    </span>
-                  </div>
-                  <div className="comment-body flex-grow">
-                    <span className="comment-author font-medium text-sm text-gray-900">
-                      {comment.username}
-                    </span>
-                    <span className="comment-text block text-xs text-gray-500 mt-1">
-                      {comment.comment}
-                    </span>
-                  </div>
-                </div>
-                <div className="comment-timestamp text-xs text-gray-500">
-                  {formatDistanceToNow(new Date(comment.created), {
-                    addSuffix: true,
-                  })}
-                </div>
-              </div>
-            ))}
-          </div>
-        </DialogContent>
-      </Dialog>
-    </div>
+          </DialogContent>
+        </Dialog>
+      </div>
     </div>
   );
 };
