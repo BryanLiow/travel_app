@@ -17,7 +17,6 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { Snackbar } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-
 import { TabProps } from "@mui/material/Tab";
 interface StyledTabProps extends TabProps {}
 
@@ -133,7 +132,6 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
         password,
       });
       // Handle success response
-      console.log(response.data);
       if (!registered) {
         setSnackbarMessage("Login successfully!");
         setSnackbarOpen(true);
@@ -206,7 +204,6 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
 
       handleLogin(true);
       // Handle success response
-      console.log(response.data);
       onClose(); // Close the dialog after successful registration
       setEmail("");
       setPassword("");
@@ -298,9 +295,9 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
                         edge="end"
                       >
                         {passwordVisible ? (
-                          <VisibilityOffIcon />
+                          <VisibilityOffIcon sx={{ fontSize: 20 }} />
                         ) : (
-                          <VisibilityIcon />
+                          <VisibilityIcon sx={{ fontSize: 20 }} />
                         )}
                       </IconButton>
                     </InputAdornment>

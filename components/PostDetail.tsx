@@ -2,23 +2,17 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import usePost from "./contexts/PostContext";
-import {
-  IconButton,
-  Avatar,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-} from "@mui/material";
+import { IconButton, Dialog, DialogTitle, DialogContent } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
-import { formatDistanceToNow } from "date-fns";
 import DoneIcon from "@mui/icons-material/Done";
+import { formatDistanceToNow } from "date-fns";
 
 interface PostData {
   postId: number;
   contentCardTitle: string;
-  likes: number;
+  likesCount: number;
   userId: number;
   location: string;
   createdOn: string;
@@ -46,19 +40,13 @@ const PostDetail: React.FC = () => {
   const [newComment, setNewComment] = useState<string>("");
 
   const fetchPostDetails = async (postId: number) => {
-    const tokenData = localStorage.getItem("token");
-    if (!tokenData) {
-      setError("Authentication token not found");
-      return;
-    }
-
     try {
-      const parsedTokenData = JSON.parse(tokenData);
-      const { token, expiry } = parsedTokenData;
-      if (!token || (expiry && Date.now() > expiry)) {
-        setError("Token is invalid or expired");
-        return;
-      }
+      const tokenData = localStorage.getItem("token");
+      if (!tokenData) throw new Error("Authentication token not found");
+
+      const { token, expiry } = JSON.parse(tokenData);
+      if (!token || (expiry && Date.now() > expiry))
+        throw new Error("Token is invalid or expired");
 
       const response = await Axios.post(
         "http://127.0.0.1:8000/api/postdetail",
@@ -66,37 +54,26 @@ const PostDetail: React.FC = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      setLocalPost((prev) => {
-        if (prev) {
-          return {
-            ...prev,
-            isLiked: response.data.isLiked,
-            likes: response.data.postLikesCount,
-            isFollowing: response.data.isFollowing,
-            imageUrls: response.data.imagePaths,
-          };
-        }
-        return null; // Handle the case when prev is null
-      });
+      setLocalPost((prev) => ({
+        ...prev,
+        ...response.data,
+      }));
     } catch (error) {
-      setError("Failed to load post details");
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("Failed to load post details");
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    if (post) {
-      setLocalPost(post);
-      fetchPostDetails(post.postId);
-    } else {
-      const savedPost = sessionStorage.getItem("currentPost");
-      if (savedPost) {
-        const storedPost = JSON.parse(savedPost);
-        setLocalPost(storedPost);
-        fetchPostDetails(storedPost.postId);
-      }
-    }
+    const savedPost =
+      post || JSON.parse(sessionStorage.getItem("currentPost") || "{}");
+    setLocalPost(savedPost);
+    if (savedPost.postId) fetchPostDetails(savedPost.postId);
   }, [post]);
 
   const handleCommentClick = async () => {
@@ -223,32 +200,6 @@ const PostDetail: React.FC = () => {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="loading-indicator">{/* <CircularProgress /> */}</div>
-    );
-  }
-
-  if (error) {
-    return <div className="error-message">Error: {error}</div>;
-  }
-
-  if (!localPost) {
-    return <div>No post data available.</div>;
-  }
-
-  const {
-    postId,
-    contentCardTitle,
-    likes,
-    userId,
-    location,
-    createdOn,
-    username,
-    imageUrl,
-    isLiked,
-  } = localPost;
-
   const handleToggleLike = async () => {
     const tokenData = localStorage.getItem("token");
 
@@ -282,7 +233,7 @@ const PostDetail: React.FC = () => {
         });
         setLocalPost((prevPost) =>
           prevPost
-            ? { ...prevPost, isLiked: false, likes: prevPost.likes - 1 }
+            ? { ...prevPost, isLiked: false, likes: prevPost.likesCount - 1 }
             : null
         );
       } else {
@@ -292,7 +243,7 @@ const PostDetail: React.FC = () => {
         });
         setLocalPost((prevPost) =>
           prevPost
-            ? { ...prevPost, isLiked: true, likes: prevPost.likes + 1 }
+            ? { ...prevPost, isLiked: true, likes: prevPost.likesCount + 1 }
             : null
         );
       }
@@ -301,8 +252,26 @@ const PostDetail: React.FC = () => {
     }
   };
 
+  if (isLoading) return <div className="loading-indicator"></div>;
+  if (error) return <div className="error-message">Error: {error}</div>;
+  if (!localPost) return <div>No post data available.</div>;
+
+  const {
+    postId,
+    contentCardTitle,
+    likesCount,
+    userId,
+    location,
+    createdOn,
+    username,
+    imageUrl,
+    isLiked,
+    isFollowing,
+  } = localPost;
+
   return (
-    <div className="post-detail bg-white rounded-lg max-w-lg mx-auto my-4 overflow-hidden shadow-lg">
+    <div className="bg-gradient-to-r from-black from-30% via-green-950 via-50% to-black to-90% text-gray-800 min-h-screen py-4">
+    <div className="bg-white rounded-lg max-w-lg mx-auto my-4 overflow-hidden shadow-lg">
       <div className="post-header flex items-center justify-between p-4 border-b">
         {/* <Avatar
           src="/path/to/user/profile_pic.jpg"
@@ -325,7 +294,7 @@ const PostDetail: React.FC = () => {
         >
           {localPost?.isFollowing ? (
             <span>
-              Following <DoneIcon />
+              Following <DoneIcon sx={{ fontSize: 20 }} />
             </span>
           ) : (
             "Follow"
@@ -347,16 +316,16 @@ const PostDetail: React.FC = () => {
             {localPost.isLiked ? (
               <FavoriteIcon color="error" />
             ) : (
-              <FavoriteBorderIcon />
+              <FavoriteBorderIcon sx={{ fontSize: 20 }} />
             )}
           </IconButton>
-          <span className="likes-count text-sm">{likes}</span>
+          <span className="likes-count text-sm">{likesCount}</span>
           <IconButton onClick={handleCommentClick} className="comment-button">
-            <ChatBubbleOutlineIcon />
+            <ChatBubbleOutlineIcon sx={{ fontSize: 20 }} />
           </IconButton>
         </div>
         {/* <IconButton className="save-button">
-          <BookmarkBorderIcon />
+          <BookmarkBorder Icon sx={{ fontSize: 20 }}  />
         </IconButton> */}
       </div>
 
@@ -390,7 +359,7 @@ const PostDetail: React.FC = () => {
                 className="w-full sm:w-auto btn_login !py-2 !px-5 flexCenter gap-8 rounded-full border hover:cursor-pointer"
                 onClick={handlePostComment}
               >
-                Post
+                Comment
               </button>
             </div>
             <h3 className="comments-title text-lg font-semibold mb-4 text-gray-900">
@@ -426,6 +395,7 @@ const PostDetail: React.FC = () => {
           </div>
         </DialogContent>
       </Dialog>
+    </div>
     </div>
   );
 };

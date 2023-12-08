@@ -1,9 +1,8 @@
 "use client";
-import * as React from "react";
+import React from "react";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import Avatar from "@mui/material/Avatar";
-import IconButton from "@mui/material/IconButton";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
@@ -11,17 +10,20 @@ import Typography from "@mui/material/Typography";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import usePost from "./contexts/PostContext";
 import { useRouter } from "next/navigation";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import Axios from "axios";
 
 type ContentCardProps = {
   randomHeight: string;
   postId: number;
   contentCardTitle: string;
-  thumbnail: string;
-  likes: number;
+  thumbnail: string | null;
+  likesCount: number;
   userId: number;
-  location: string;
+  location: string | null;
   username: string;
   createdOn: string;
+  isLiked: boolean;
 };
 
 const ContentCard = ({
@@ -29,11 +31,12 @@ const ContentCard = ({
   postId,
   contentCardTitle,
   thumbnail,
-  likes,
+  likesCount,
   userId,
   location,
   username,
   createdOn,
+  isLiked,
 }: ContentCardProps) => {
   const { setPost } = usePost();
   const router = useRouter();
@@ -42,7 +45,7 @@ const ContentCard = ({
     setPost({
       postId,
       contentCardTitle,
-      likes,
+      likesCount,
       userId,
       location,
       createdOn,
@@ -52,25 +55,28 @@ const ContentCard = ({
     router.push("/post-detail");
   };
 
+  const handleUserProfile = () => {
+    const userProfileUrl = `/profile?userId=${userId}`;
+    router.push(userProfileUrl);
+  };
+  
+
   return (
-    <a onClick={handleCardClick} className="hover:cursor-pointer">
+    <a className="hover:cursor-pointer">
       <Card
         className="rounded-xl border-solid border-2 border-gray-100"
-        sx={{ maxWidth: 350 }}
+        sx={{ maxWidth: 350, borderRadius: "16px" }}
       >
         {randomHeight == "true" && (
           <CardHeader
             avatar={
-              <Avatar aria-label="recipe">
+              <Avatar aria-label="recipe" onClick={handleUserProfile}>
                 {username.charAt(0).toUpperCase()}
               </Avatar>
             }
-            title={username}
-            subheader={
-              <div className="text-xs text-gray-300">
-                <span>{location}</span>
-              </div>
-            }
+            titleTypographyProps={{ fontWeight: "bold" }}
+            title={<span onClick={handleUserProfile}>{username}</span>}
+            // ... other props ...
           />
         )}
 
@@ -81,20 +87,32 @@ const ContentCard = ({
               : "card-content-media-height-2"
           }
           component="img"
-          image={thumbnail}
-          alt=""
+          image={thumbnail || ""}
+          alt="post"
+          onClick={handleCardClick}
         />
         <CardContent>
-          <Typography>{contentCardTitle}</Typography>
+          <Typography sx={{ fontWeight: "bold" }}>
+            {contentCardTitle}
+          </Typography>
         </CardContent>
         <CardActions>
-          <div className="grid grid-cols-2 w-full">
-            <div className="text-xs">
-              <FavoriteBorderIcon />
-              <span className="text-xs">{likes}</span>
+          <div className="flex flex-col w-full">
+            <div className="grid grid-cols-2">
+              <div className="text-xs">
+                {isLiked ? (
+                  <FavoriteIcon color="error" />
+                ) : (
+                  <FavoriteBorderIcon sx={{ fontSize: 20 }} />
+                )}
+                <span className="text-xs text-gray-500">{likesCount}</span>
+              </div>
+              <div className="text-xs text-right pt-1">
+                <span>{createdOn}</span>
+              </div>
             </div>
-            <div className="text-xs text-right pt-1">
-              <span>{createdOn}</span>
+            <div className="text-xs text-gray-300">
+              <span>{location}</span>
             </div>
           </div>
         </CardActions>

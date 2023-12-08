@@ -182,7 +182,6 @@ const EditProfile = () => {
             .catch((error) => {
               console.error("There was an error!", error);
             });
-          console.log("Profile updated successfully:", response.data);
           setSnackbarOpen(true);
         })
         .catch((error) => {

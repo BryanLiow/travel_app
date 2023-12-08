@@ -4,12 +4,12 @@ import React, { createContext, useState, useContext, useCallback } from "react";
 type PostData = {
   postId: number;
   contentCardTitle: string;
-  likes: number;
+  likesCount: number;
   userId: number;
-  location: string;
+  location: string | null;
   createdOn: string;
   username: string;
-  imageUrl?: string;
+  imageUrl?: string | null;
   isLiked?: boolean;
 };
 

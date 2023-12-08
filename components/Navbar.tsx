@@ -64,7 +64,7 @@ const Navbar = () => {
             type="submit"
             className="absolute right-2 top-2 text-gray-600"
           >
-            <SearchIcon />
+            <SearchIcon sx={{ fontSize: 20 }}  />
           </button>
         </div> */}
         <ul className="hidden h-full gap-12 lg:flex">
@@ -109,7 +109,7 @@ const Navbar = () => {
             <Button
               type="button"
               title="Logout"
-              icon={<PersonIcon />}
+              icon={<PersonIcon sx={{ fontSize: 20 }} />}
               variant="btn_logout"
               onClick={handleLogout}
             />
@@ -117,7 +117,7 @@ const Navbar = () => {
             <Button
               type="button"
               title="Login"
-              icon={<PersonIcon />}
+              icon={<PersonIcon sx={{ fontSize: 20 }} />}
               variant="btn_login"
               onClick={handleAuthDialogToggle}
             />
@@ -148,7 +148,7 @@ const Navbar = () => {
           className="absolute top-4 right-4 text-black"
           aria-label="Close menu"
         >
-          <CloseIcon />
+          <CloseIcon sx={{ fontSize: 20 }} />
         </button>
         <button
           onClick={toggleSidebar}
@@ -201,7 +201,7 @@ const Navbar = () => {
               <Button
                 type="button"
                 title="Logout"
-                icon={<PersonIcon />}
+                icon={<PersonIcon sx={{ fontSize: 20 }} />}
                 variant="btn_logout"
                 onClick={() => {
                   toggleSidebar();
@@ -212,7 +212,7 @@ const Navbar = () => {
               <Button
                 type="button"
                 title="Login"
-                icon={<PersonIcon />}
+                icon={<PersonIcon sx={{ fontSize: 20 }} />}
                 variant="btn_login"
                 onClick={() => {
                   handleAuthDialogToggle();

@@ -205,7 +205,6 @@ const CreatePost: React.FC = () => {
     })
       .then((response) => {
         setSnackbarOpen(true);
-        console.log("Post created successfully:", response.data);
         router.push("/profile");
       })
       .catch((error) => {
@@ -309,7 +308,7 @@ const CreatePost: React.FC = () => {
                       }}
                       className="absolute top-0 right-0 bg-white border border-gray-300 rounded-full cursor-pointer m-2"
                     >
-                      <DeleteIcon />
+                      <DeleteIcon sx={{ fontSize: 20 }} />
                     </button>
                   </div>
                 ))}

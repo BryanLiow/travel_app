@@ -195,7 +195,7 @@ body {
 /* Custom CSS for Home Container */
 .home-container {
   column-count: 2; /* Adjust the number of columns based on your design */
-  column-gap: 2px;
+  column-gap: 8px;
   width: 100%;
   padding: 2px;
 }

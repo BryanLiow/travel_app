@@ -9,31 +9,60 @@ interface Post {
   user_id: number;
   title: string;
   caption: string;
-  likes: number;
+  likesCount: number;
   country: string | null;
   created_at: string;
   image: string | null;
   username: string;
   createdOn: string;
+  isLiked: boolean;
+}
+
+// Define a common interface for Axios configuration
+interface AxiosConfig {
+  headers?: { Authorization: string };
+  params?: { exclude: number[] };
 }
 
 const Home = () => {
-  const [contentCards, setContentCards] = useState<any[]>([]);
+  const [contentCards, setContentCards] = useState<Post[]>([]);
   const [loadedPostIds, setLoadedPostIds] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [allDataLoaded, setAllDataLoaded] = useState(false);
 
   const fetchPosts = async () => {
     if (isLoading || allDataLoaded) return;
+
     setIsLoading(true);
+    const tokenData = localStorage.getItem("token");
+    let url = "http://127.0.0.1:8000/api/homepostswithouttoken";
+    let axiosConfig: AxiosConfig = { params: { exclude: loadedPostIds } };
+
+    if (tokenData) {
+      let parsedTokenData;
+      try {
+        parsedTokenData = JSON.parse(tokenData);
+      } catch (error) {
+        console.error("Error parsing token data:", error);
+        return;
+      }
+
+      const { token, expiry } = parsedTokenData;
+      if (expiry && Date.now() > expiry) {
+        console.error("Token expired");
+        // Redirect to login or refresh token
+        return;
+      }
+
+      url = "http://127.0.0.1:8000/api/homeposts";
+      axiosConfig.headers = { Authorization: `Bearer ${token}` };
+    }
 
     try {
-      const response = await Axios.get("http://127.0.0.1:8000/api/homeposts", {
-        params: { exclude: loadedPostIds },
-      });
+      const response = await Axios.post(url, {}, axiosConfig);
       const newPosts = response.data.map((post: Post) => ({
         ...post,
-        createdOn: formatDistanceToNow(new Date(post.createdOn), {
+        createdOn: formatDistanceToNow(new Date(post.created_at), {
           addSuffix: true,
         }),
       }));
@@ -43,7 +72,7 @@ const Home = () => {
         setContentCards((prevCards) => [...prevCards, ...newPosts]);
         setLoadedPostIds((prevIds) => [
           ...prevIds,
-          ...newPosts.map((post: any) => post.id),
+          ...newPosts.map((post: Post) => post.id),
         ]);
       }
     } catch (error) {
@@ -67,28 +96,16 @@ const Home = () => {
 
   useEffect(() => {
     fetchPosts();
-
-    const debouncedHandleScroll = debounce(handleScroll, 100);
-    window.addEventListener("scroll", debouncedHandleScroll);
-
-    return () => window.removeEventListener("scroll", debouncedHandleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, [handleScroll]);
 
-  const debounce = (
-    func: (...args: any[]) => void,
-    delay: number
-  ): (() => void) => {
-    let timer: NodeJS.Timeout | null = null;
-
-    return (...args: any[]) => {
-      if (timer) clearTimeout(timer);
-      timer = setTimeout(() => func(...args), delay);
-    };
-  };
   return (
-    <div className="bg-black text-gray-800 min-h-screen">
+    <div className="bg-gradient-to-r from-black from-30% via-green-950 via-50% to-black to-90% text-gray-800 min-h-screen">
       <div className="my-4 p-3">
-        <div className="bg-white rounded-t-lg">
+        <div className="bg-opacity-0 rounded-t-lg">
           <div className="flex">
             <div className="home-container">
               {contentCards.map((contentCard, index) => (
@@ -98,15 +115,15 @@ const Home = () => {
                     postId={contentCard.id}
                     contentCardTitle={contentCard.title}
                     thumbnail={contentCard.image}
-                    likes={contentCard.likes}
+                    likesCount={contentCard.likesCount}
                     userId={contentCard.user_id}
                     location={contentCard.country}
                     username={contentCard.username}
                     createdOn={contentCard.createdOn}
+                    isLiked={contentCard.isLiked}
                   />
                 </div>
               ))}
-              {isLoading && <p>Loading more posts...</p>}
             </div>
           </div>
         </div>
