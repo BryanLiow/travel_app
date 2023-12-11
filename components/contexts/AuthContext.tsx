@@ -11,7 +11,6 @@ interface User {
   username: string;
   token: string | null;
   expiry: number | null;
-  // Add other user-related fields here
 }
 
 interface AuthContextType {
@@ -26,19 +25,22 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const TOKEN_VALIDITY_PERIOD = 7 * 24 * 60 * 60 * 1000; // 1 week in milliseconds
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(() => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
+
+  // Fetch token from localStorage in useEffect to ensure it's client-side
+  useEffect(() => {
     const tokenData = localStorage.getItem("token");
     if (tokenData) {
-      const { token, expiry } = JSON.parse(tokenData);
+      const { username, token, expiry } = JSON.parse(tokenData);
       if (Date.now() < expiry) {
-        return { username: "", token, expiry };
+        setUser({ username, token, expiry });
       }
     }
-    return { username: "", token: null, expiry: null };
-  });
-
-  const [authDialogOpen, setAuthDialogOpen] = useState(false);
+  }, []);
 
   const toggleAuthDialog = () => {
     setAuthDialogOpen(!authDialogOpen);
@@ -48,20 +50,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const expiry = Date.now() + TOKEN_VALIDITY_PERIOD;
     const userWithExpiry = { ...userData, expiry };
     setUser(userWithExpiry);
-    if (userData.token) {
-      localStorage.setItem(
-        "token",
-        JSON.stringify({ token: userData.token, expiry })
-      );
-    }
+    localStorage.setItem("token", JSON.stringify({ ...userData, expiry }));
   };
 
   const logout = () => {
-    setUser({ username: "", token: null, expiry: null });
+    setUser(null);
     localStorage.removeItem("token");
     setAuthDialogOpen(false);
   };
 
+  // Effect for auto-logout on token expiry
   useEffect(() => {
     const interval = setInterval(() => {
       if (user && user.expiry && Date.now() > user.expiry) {
@@ -72,12 +70,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [user]);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, authDialogOpen, toggleAuthDialog }}>
+    <AuthContext.Provider
+      value={{ user, login, logout, authDialogOpen, toggleAuthDialog }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
-
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
