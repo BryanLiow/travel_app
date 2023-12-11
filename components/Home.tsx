@@ -37,7 +37,7 @@ const Home = () => {
 
     setIsLoading(true);
     const tokenData = localStorage.getItem("token");
-    let url = "https://bryanliow2.com/api/homepostswithouttoken";
+    let url, method, data;
     let axiosConfig: AxiosConfig = { params: { exclude: loadedPostIds } };
 
     if (tokenData) {
@@ -52,22 +52,33 @@ const Home = () => {
       const { token, expiry } = parsedTokenData;
       if (expiry && Date.now() > expiry) {
         console.error("Token expired");
-        // Redirect to login or refresh token
         return;
       }
 
       url = "https://bryanliow2.com/api/homeposts";
+      method = "post";
       axiosConfig.headers = { Authorization: `Bearer ${token}` };
+    } else {
+      url = "https://bryanliow2.com/api/homepostswithouttoken";
+      method = "get";
+      data = {};
     }
 
     try {
-      const response = await Axios.post(url, {}, axiosConfig);
+      const response = await Axios({
+        url,
+        method,
+        data,
+        ...axiosConfig,
+      });
+
       const newPosts = response.data.map((post: Post) => ({
         ...post,
         createdOn: formatDistanceToNow(new Date(post.created_at), {
           addSuffix: true,
         }),
       }));
+
       if (newPosts.length === 0) {
         setAllDataLoaded(true);
       } else {
