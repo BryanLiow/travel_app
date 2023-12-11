@@ -60,14 +60,14 @@ const Profile = () => {
       if (userId) {
         // Use POST for /userProfile API
         const response = await Axios.post(
-          "http://127.0.0.1:8000/api/userprofile",
+          "https://bryanliow2.com//api/userprofile",
           { userId },
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setUserData(response.data.user); // Accessing user object from response
       } else {
         // Use GET for /user API
-        const response = await Axios.get("http://127.0.0.1:8000/api/user", {
+        const response = await Axios.get("https://bryanliow2.com//api/user", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUserData(response.data); // Directly setting user data from response
@@ -100,7 +100,7 @@ const Profile = () => {
       }
 
       try {
-        const response = await Axios.get("http://127.0.0.1:8000/api/user", {
+        const response = await Axios.get("https://bryanliow2.com//api/user", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUserData(response.data);
@@ -151,11 +151,11 @@ const Profile = () => {
       const query = new URLSearchParams(window.location.search);
       const userIdFromUrl = query.get("userId");
 
-      let apiUrl = "http://127.0.0.1:8000/api/post";
+      let apiUrl = "https://bryanliow2.com//api/post";
       let requestData = {};
 
       if (userIdFromUrl) {
-        apiUrl = "http://127.0.0.1:8000/api/userpost";
+        apiUrl = "https://bryanliow2.com//api/userpost";
         requestData = { userId: userIdFromUrl };
       }
 

@@ -5,7 +5,6 @@ import ContentCard from "./ContentCard";
 import { formatDistanceToNow } from "date-fns";
 import { usePathname } from "next/navigation";
 
-
 interface Post {
   id: number;
   user_id: number;
@@ -31,14 +30,14 @@ const Home = () => {
   const [loadedPostIds, setLoadedPostIds] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [allDataLoaded, setAllDataLoaded] = useState(false);
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   const fetchPosts = async () => {
     if (isLoading || allDataLoaded) return;
 
     setIsLoading(true);
     const tokenData = localStorage.getItem("token");
-    let url = "http://127.0.0.1:8000/api/homepostswithouttoken";
+    let url = "https://bryanliow2.com//api/homepostswithouttoken";
     let axiosConfig: AxiosConfig = { params: { exclude: loadedPostIds } };
 
     if (tokenData) {
@@ -57,7 +56,7 @@ const Home = () => {
         return;
       }
 
-      url = "http://127.0.0.1:8000/api/homeposts";
+      url = "https://bryanliow2.com//api/homeposts";
       axiosConfig.headers = { Authorization: `Bearer ${token}` };
     }
 

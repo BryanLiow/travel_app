@@ -205,7 +205,7 @@ const CreatePost: React.FC = () => {
       }
     }
 
-    Axios.post("http://127.0.0.1:8000/api/createnewpost", formData, {
+    Axios.post("https://bryanliow2.com//api/createnewpost", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,

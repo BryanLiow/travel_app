@@ -127,7 +127,7 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
 
   const handleLogin = async (registered: boolean) => {
     try {
-      const response = await Axios.post("http://127.0.0.1:8000/api/login", {
+      const response = await Axios.post("https://bryanliow2.com//api/login", {
         email,
         password,
       });
@@ -158,7 +158,7 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
           return;
         }
 
-        Axios.get("http://127.0.0.1:8000/api/user", {
+        Axios.get("https://bryanliow2.com//api/user", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -192,13 +192,16 @@ const AuthPortal: React.FC<AuthPortalProps> = ({
   // Function to handle registration
   const handleRegister = async () => {
     try {
-      const response = await Axios.post("http://127.0.0.1:8000/api/register", {
-        username: username,
-        name: fullName,
-        email: email,
-        password: password,
-        password_confirmation: confirmPassword,
-      });
+      const response = await Axios.post(
+        "https://bryanliow2.com//api/register",
+        {
+          username: username,
+          name: fullName,
+          email: email,
+          password: password,
+          password_confirmation: confirmPassword,
+        }
+      );
       setSnackbarMessage("Register successfully!"); // You can customize this message
       setSnackbarOpen(true);
 
