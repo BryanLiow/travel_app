@@ -74,7 +74,7 @@ const PostDetail: React.FC = () => {
         throw new Error("Token is invalid or expired");
 
       const response = await Axios.post(
-        "https://bryanliow2.com//api/postdetail",
+        "https://bryanliow2.com/api/postdetail",
         { post_id: postId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -122,7 +122,7 @@ const PostDetail: React.FC = () => {
 
       try {
         const response = await Axios.post(
-          "https://bryanliow2.com//api/comment",
+          "https://bryanliow2.com/api/comment",
           { post_id: localPost?.postId },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -158,7 +158,7 @@ const PostDetail: React.FC = () => {
       }
       try {
         await Axios.post(
-          "https://bryanliow2.com//api/writecomment",
+          "https://bryanliow2.com/api/writecomment",
           { post_id: localPost?.postId, comment: newComment },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -209,7 +209,7 @@ const PostDetail: React.FC = () => {
 
       if (localPost && localPost.isFollowing) {
         // User is currently following, so make a request to unfollow
-        await Axios.delete("https://bryanliow2.com//api/unfollow", {
+        await Axios.delete("https://bryanliow2.com/api/unfollow", {
           headers,
           data,
         });
@@ -218,7 +218,7 @@ const PostDetail: React.FC = () => {
         );
       } else {
         // User is not following, so make a request to follow
-        await Axios.post("https://bryanliow2.com//api/following", data, {
+        await Axios.post("https://bryanliow2.com/api/following", data, {
           headers,
         });
         setLocalPost((prevPost) =>
@@ -257,7 +257,7 @@ const PostDetail: React.FC = () => {
 
       if (localPost?.isLiked) {
         // User has liked the post, so make a request to unlike
-        await Axios.delete("https://bryanliow2.com//api/unlikepost", {
+        await Axios.delete("https://bryanliow2.com/api/unlikepost", {
           headers,
           data,
         });
@@ -268,7 +268,7 @@ const PostDetail: React.FC = () => {
         );
       } else {
         // User hasn't liked the post, so make a request to like
-        await Axios.post("https://bryanliow2.com//api/likepost", data, {
+        await Axios.post("https://bryanliow2.com/api/likepost", data, {
           headers,
         });
         setLocalPost((prevPost) =>

@@ -97,7 +97,7 @@ const EditProfile = () => {
           return;
         }
 
-        Axios.get("https://bryanliow2.com//api/user", {
+        Axios.get("https://bryanliow2.com/api/user", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -170,13 +170,13 @@ const EditProfile = () => {
         gender: gender,
       };
 
-      Axios.post("https://bryanliow2.com//api/updateprofile", data, {
+      Axios.post("https://bryanliow2.com/api/updateprofile", data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
         .then((response) => {
-          Axios.get("https://bryanliow2.com//api/user", {
+          Axios.get("https://bryanliow2.com/api/user", {
             headers: {
               Authorization: `Bearer ${token}`,
             },

@@ -37,7 +37,7 @@ const Home = () => {
 
     setIsLoading(true);
     const tokenData = localStorage.getItem("token");
-    let url = "https://bryanliow2.com//api/homepostswithouttoken";
+    let url = "https://bryanliow2.com/api/homepostswithouttoken";
     let axiosConfig: AxiosConfig = { params: { exclude: loadedPostIds } };
 
     if (tokenData) {
@@ -56,7 +56,7 @@ const Home = () => {
         return;
       }
 
-      url = "https://bryanliow2.com//api/homeposts";
+      url = "https://bryanliow2.com/api/homeposts";
       axiosConfig.headers = { Authorization: `Bearer ${token}` };
     }
 
